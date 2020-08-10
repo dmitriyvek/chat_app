@@ -1,16 +1,115 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
+    <meta charset="utf-8" />
+    <title>Chat</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet"
+    />
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    {{ room_name|json_script:"room-name" }}
+    <div class="container">
+        <div class="column-left">
+            <div class="profile-info-box">
+                <img
+                    class="profile-image"
+                    src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg"
+                    alt="Profile img"
+                />
+                <span class="settings-tray">
+                    <i class="material-icons">cached</i>
+                    <i class="material-icons">message</i>
+                    <i class="material-icons">menu</i>
+                </span>
+            </div>
+
+            <div class="contact-search-box">
+                <div class="contact-search-box__wrapper">
+                    <i class="material-icons">search</i>
+                    <input
+                    class="contact-search-input"
+                    placeholder="Search here"
+                    type="text"
+                    />
+                </div>
+            </div>
+
+            <div class="contact-list slide-box slide-box_contact-list">
+                <div class="contact-box">
+                    <img
+                    class="profile-image"
+                    src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
+                    alt=""
+                    />
+                    <div class="contact-box__text-wrapper">
+                        <h6 class="contact-box__profile_name">Robo Cop</h6>
+                        <p class="contact-box__last-message-text">
+                            Hey, you're arrested! Lorem ipsum dolor sit amet
+                        </p>
+                    </div>
+                    <span class="contact-box__last-message-time">13:21</span>
+                </div>
+                <hr />
+            </div>
+
+            <div class="application-settings-tray"></div>
+        </div>
+
+        <div class="column-right">
+            <div class="chat-header-box">
+                <img
+                    class="profile-image"
+                    src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
+                    alt=""
+                />
+                <div class="chat-header-box__text-wrapper">
+                    <h6 class="chat-header-box__profile_name">Robo Cop</h6>
+                    <p class="chat-header-box__profile-description">
+                    Layin' down the law since like before Christ...
+                    </p>
+                </div>
+                <span class="settings-tray">
+                    <i class="material-icons">cached</i>
+                    <i class="material-icons">message</i>
+                    <i class="material-icons">menu</i>
+                </span>
+            </div>
+
+            <div class="chat-log slide-box slide-box_chat-log">
+                {% comment %} <div class="chat-message-box chat-message-box_right">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+                    cumque minus obcaecati autem debitis asperiores natus expedita
+                    perferendis repellendus laboriosam repudiandae officiis nobis id
+                    nulla, quidem illo tenetu
+                </div>
+
+                <div class="chat-message-box chat-message-box_left">
+                    message2 text
+                </div> {% endcomment %}
+            </div>
+
+            <form class="message-input-box" action="">
+                <i class="message-input-box__emojis-icon material-icons"
+                    >sentiment_very_satisfied</i
+                >
+                <input
+                    class="message-input-box__input"
+                    type="text"
+                    placeholder="Type your message here..."
+                />
+                <button class="message-input-box__submit-button" type="submit">
+                    <i class="material-icons">send</i>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const roomName = '{{ room_name }}';
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -20,30 +119,63 @@
             + '/'
         );
 
+        chatSocket.onopen = function(e) {
+            fetchMessageList();
+        }
+
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            if (data['command'] === 'message_list') {
+            for (let i=0; i<data['message_list'].length; i++) {
+                createMessage(data['message_list'][i]);
+            }
+            } else if (data['command'] === 'new_message'){
+                createMessage(data['message']);
+            }
         };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
+        document.querySelector('.message-input-box__input').focus();
+        document.querySelector('.message-input-box__input').onkeyup = function(e) {
+            if (e.keyCode === 13) {
+                document.querySelector('.message-input-box__submit-button').click();
             }
         };
 
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
+        document.querySelector('.message-input-box__submit-button').onclick = function(e) {
+            const messageInputDom = document.querySelector('.message-input-box__input');
             const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
+            if (message !== '') {
+                chatSocket.send(JSON.stringify({
+                    'command': 'new_message',
+                    'message': message
+                }));
+            };
             messageInputDom.value = '';
         };
+
+        function fetchMessageList() {
+            chatSocket.send(JSON.stringify({
+                'command': 'fetch_message_list'
+            }));
+        }
+
+        function createMessage(data) {
+            const msgDivTag = document.createElement('div');
+            msgDivTag.textContent = data.content;
+
+            const random = Math.round(Math.random());
+            
+            if (random) {
+                msgDivTag.className = "chat-message-box chat-message-box_right";
+            } else {
+                msgDivTag.className = "chat-message-box chat-message-box_left";
+            }
+            document.querySelector('.chat-log').appendChild(msgDivTag);
+        }
     </script>
 </body>
 </html>
