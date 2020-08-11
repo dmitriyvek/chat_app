@@ -1,10 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import MessageViewSet
+from .views import ChatViewSet
 
 router = DefaultRouter()
-router.register('messages', MessageViewSet)
+router.register('chats', ChatViewSet, 'chat')
 
 app_name = 'chat'
 urlpatterns = [

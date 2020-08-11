@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from .models import Message
+from .services import get_current_chat_by_id, get_last_message_list_from_current_chat, get_profile_by_user_id
 
 User = get_user_model()
 
@@ -11,7 +12,7 @@ User = get_user_model()
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_message_list(self, data):
-        massage_list = Message.objects.all()
+        massage_list = get_last_message_list_from_current_chat(data['chatId'], 30)
         content = {
             'command': 'message_list',
             'message_list': self.message_list_to_json(massage_list)
@@ -19,7 +20,10 @@ class ChatConsumer(WebsocketConsumer):
         self.send_message(content)
 
     def new_message(self, data):
+        author_profile = get_profile_by_user_id(data['author'])
         message = Message.objects.create(
+            author=author_profile,
+            chat=get_current_chat_by_id(data['chatId']),
             content=data['message']
         )
         content = {
@@ -36,7 +40,8 @@ class ChatConsumer(WebsocketConsumer):
 
     def message_to_json(self, message):
         return {
-            'id': message.id,
+            'id': message.id,  # for react list id
+            'author': message.author.user.username,
             'content': message.content,
             'timestamp': str(message.timestamp)
         }

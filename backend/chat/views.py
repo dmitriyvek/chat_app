@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
 
-def room(request, room_name):
+def chat(request, chat_id):
     return render(request, 'chat/room.html', {
-        'room_name': room_name
+        'chat_id': chat_id,
+        'user': request.user.username
     })

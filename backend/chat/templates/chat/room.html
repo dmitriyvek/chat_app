@@ -109,13 +109,14 @@
     </div>
 
     <script>
-        const roomName = '{{ room_name }}';
+        const chatId = '{{ chat_id }}';
+        const user = '{{ user }}'
 
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
             + '/ws/chat/'
-            + roomName
+            + chatId
             + '/'
         );
 
@@ -148,9 +149,11 @@
         document.querySelector('.message-input-box__submit-button').onclick = function(e) {
             const messageInputDom = document.querySelector('.message-input-box__input');
             const message = messageInputDom.value;
-            if (message !== '') {
+            if (message) {
                 chatSocket.send(JSON.stringify({
                     'command': 'new_message',
+                    'chatId': chatId,
+                    'author': user,
                     'message': message
                 }));
             };
@@ -159,17 +162,17 @@
 
         function fetchMessageList() {
             chatSocket.send(JSON.stringify({
-                'command': 'fetch_message_list'
+                'command': 'fetch_message_list',
+                'chatId': chatId
             }));
         }
 
         function createMessage(data) {
             const msgDivTag = document.createElement('div');
             msgDivTag.textContent = data.content;
-
-            const random = Math.round(Math.random());
+            const author = data.author;
             
-            if (random) {
+            if (author === user) {
                 msgDivTag.className = "chat-message-box chat-message-box_right";
             } else {
                 msgDivTag.className = "chat-message-box chat-message-box_left";
