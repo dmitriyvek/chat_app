@@ -106,7 +106,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       // filename: `${pathList.assets}/css/${filename(css)}`,
       filename: filename("css"),
@@ -122,20 +122,20 @@ module.exports = {
       },
       // inject: false, // turn off auto inject <script> and <link>, instead need template engine logic (ejs)
     }),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: `${pathList.src}/${pathList.assets}/img`,
-          // to: `${pathList.assets}/img`,
-          to: "",
-        },
-        {
-          from: `${pathList.src}/${pathList.assets}/fonts`,
-          // to: `${pathList.assets}/fonts`,
-          to: "",
-        },
-        { from: `${pathList.src}/static`, to: "" },
-      ],
-    }),
+    // new CopyWebpackPlugin({
+    //   patterns: [
+    //     {
+    //       from: `${pathList.src}/${pathList.assets}/img`,
+    //       // to: `${pathList.assets}/img`,
+    //       to: "",
+    //     },
+    //     {
+    //       from: `${pathList.src}/${pathList.assets}/fonts`,
+    //       // to: `${pathList.assets}/fonts`,
+    //       to: "",
+    //     },
+    //     { from: `${pathList.src}/static`, to: "" },
+    //   ],
+    // }),
   ],
 };
