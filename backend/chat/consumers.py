@@ -24,7 +24,7 @@ class ChatConsumer(WebsocketConsumer):
         message = Message.objects.create(
             author=author_profile,
             chat=get_current_chat_by_id(data['chatId']),
-            content=data['message']
+            content=data['content']
         )
         content = {
             'command': 'new_message',

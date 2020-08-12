@@ -6,14 +6,14 @@ import WebSocketInstance from "../websocket";
 class Chat extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { message: "" };
 
     WebSocketInstance.waitForSocketConnection(() => {
       WebSocketInstance.addCallbackList(
         this.setMessageList.bind(this),
         this.addMessage.bind(this)
       );
-      WebSocketInstance.fetchMessageList();
+      WebSocketInstance.fetchMessageList(1);
     });
   }
 
@@ -34,6 +34,8 @@ class Chat extends React.Component {
   sendMessageHandler = (event) => {
     event.preventDefault();
     const messageObject = {
+      chatId: 1,
+      authorId: 1,
       content: this.state.message,
     };
     WebSocketInstance.newChatMessage(messageObject);
@@ -47,7 +49,7 @@ class Chat extends React.Component {
       <li
         key={message.id}
         className={
-          Math.round(Math.random()) === 1
+          message.author === "admin"
             ? "chat-message-box chat-message-box_right"
             : "chat-message-box chat-message-box_left"
         }

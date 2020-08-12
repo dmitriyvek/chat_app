@@ -150,14 +150,14 @@
         document.querySelector('.message-input-box__submit-button').onclick = function(e) {
             e.preventDefault();
             const messageInputDom = document.querySelector('.message-input-box__input');
-            const message = messageInputDom.value;
-            if (message) {
+            const content = messageInputDom.value;
+            if (content) {
                 chatSocket.send(JSON.stringify({
                     'command': 'new_message',
                     'chatId': chatId,
                     'authorId': userId,
                     'author': user,
-                    'message': message
+                    'content': content
                 }));
             };
             messageInputDom.value = '';
