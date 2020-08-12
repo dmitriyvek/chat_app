@@ -20,7 +20,7 @@ class ChatConsumer(WebsocketConsumer):
         self.send_message(content)
 
     def new_message(self, data):
-        author_profile = get_profile_by_user_id(data['author'])
+        author_profile = get_profile_by_user_id(data['authorId'])
         message = Message.objects.create(
             author=author_profile,
             chat=get_current_chat_by_id(data['chatId']),
@@ -41,7 +41,7 @@ class ChatConsumer(WebsocketConsumer):
     def message_to_json(self, message):
         return {
             'id': message.id,  # for react list id
-            'author': message.author.user.username,
+            'author': message.author.username,
             'content': message.content,
             'timestamp': str(message.timestamp)
         }

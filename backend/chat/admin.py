@@ -4,7 +4,7 @@ from .models import Profile, Chat, Message
 
 
 class MessageAdmin(admin.ModelAdmin):
-    fields = ['contact', 'chat', 'content']
+    fields = ['author', 'chat', 'content']
 
 
 class MessageInLine(admin.TabularInline):
