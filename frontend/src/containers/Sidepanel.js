@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+import * as actions from "../store/actions/auth";
 
 class Sidepanel extends React.Component {
   render() {
@@ -11,6 +13,9 @@ class Sidepanel extends React.Component {
             alt="Profile img"
           />
           <span className="settings-tray">
+            <button onClick={() => this.props.logout()} className="logout-btn">
+              <span>Logout</span>
+            </button>
             <i className="material-icons">cached</i>
             <i className="material-icons">message</i>
             <i className="material-icons">menu</i>
@@ -52,4 +57,10 @@ class Sidepanel extends React.Component {
   }
 }
 
-export default Sidepanel;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logout: () => dispatch(actions.logout()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Sidepanel);

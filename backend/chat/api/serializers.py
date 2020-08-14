@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from chat.models import Chat, Profile
-from chat.services import get_profile_by_user_id
+# from chat.services import get_profile_by_username
 
 
 class ProfileSerializer(serializers.StringRelatedField):
@@ -23,7 +23,7 @@ class ChatSerializer(serializers.ModelSerializer):
     #     chat = Chat()
     #     chat.save()
     #     for username in participant_list:
-    #         profile = get_profile_by_user_id(username)
+    #         profile = get_profile_by_username(username)
     #         chat.participant_list.add(profile)
     #     chat.save()
     #     return chat

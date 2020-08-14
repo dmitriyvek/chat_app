@@ -4,7 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from .models import Message
-from .services import get_current_chat_by_id, get_last_message_list_from_current_chat, get_profile_by_user_id
+from .services import get_current_chat_by_id, get_last_message_list_from_current_chat, get_profile_by_username
 
 User = get_user_model()
 
@@ -20,7 +20,7 @@ class ChatConsumer(WebsocketConsumer):
         self.send_message(content)
 
     def new_message(self, data):
-        author_profile = get_profile_by_user_id(data['authorId'])
+        author_profile = get_profile_by_username(data['author'])
         message = Message.objects.create(
             author=author_profile,
             chat=get_current_chat_by_id(data['chatId']),

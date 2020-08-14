@@ -60,7 +60,7 @@ class WebSocketService {
     this.sendMessage({
       command: "new_message",
       chatId: message.chatId,
-      authorId: message.authorId,
+      author: message.author,
       content: message.content,
     });
   }

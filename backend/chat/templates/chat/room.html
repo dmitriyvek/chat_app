@@ -110,7 +110,6 @@
 
     <script>
         const chatId = '{{ chat_id }}';
-        const userId = '{{ user_id }}';
         const user = '{{ user }}'
 
         const chatSocket = new WebSocket(
@@ -155,7 +154,7 @@
                 chatSocket.send(JSON.stringify({
                     'command': 'new_message',
                     'chatId': chatId,
-                    'authorId': userId,
+                    'author': user,
                     'author': user,
                     'content': content
                 }));

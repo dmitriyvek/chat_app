@@ -12,8 +12,8 @@ def get_last_message_list_from_current_chat(chat_id, number_of_messages=30):
     return chat.message_list.prefetch_related('author')[:number_of_messages]
 
 
-def get_profile_by_user_id(user_id):
-    return get_object_or_404(Profile, user=user_id)
+def get_profile_by_username(user_name):
+    return get_object_or_404(Profile, username=user_name)
 
 
 def get_current_chat_by_id(chat_id):
