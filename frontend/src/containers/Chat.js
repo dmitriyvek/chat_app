@@ -6,7 +6,7 @@ import WebSocketInstance from "../websocket";
 class Chat extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { message: "" };
+    this.state = { messageInput: { content: "", rows: 1 }, messageList: [] };
 
     WebSocketInstance.waitForSocketConnection(() => {
       WebSocketInstance.addCallbackList(
@@ -26,8 +26,24 @@ class Chat extends React.Component {
   }
 
   messageChangeHandler = (event) => {
+    let newMessageInput = {
+      ...this.state.messageInput,
+      content: event.target.value,
+    };
+
+    event.target.rows = 1;
+    // console.log(event.target.scrollHeight, event.target.offsetHeight);
+    const currentRows = (event.target.scrollHeight - 12) / 20;
+    event.target.rows = currentRows;
+    if (currentRows >= 3) {
+      newMessageInput.rows = 3;
+      event.target.scrollTop = event.target.scrollHeight;
+    } else {
+      newMessageInput.rows = currentRows;
+    }
+
     this.setState({
-      message: event.target.value,
+      messageInput: newMessageInput,
     });
   };
 
@@ -36,11 +52,11 @@ class Chat extends React.Component {
     const messageObject = {
       chatId: 1,
       authorId: 1,
-      content: this.state.message,
+      content: this.state.messageInput.content,
     };
     WebSocketInstance.newChatMessage(messageObject);
     this.setState({
-      message: "",
+      messageInput: { ...this.state.messageInput, content: "" },
     });
   };
 
@@ -96,10 +112,11 @@ class Chat extends React.Component {
             <i className="message-input-box__emojis-icon material-icons">
               sentiment_very_satisfied
             </i>
-            <input
+            <textarea
+              rows={this.state.messageInput.rows}
               className="message-input-box__input"
               onChange={this.messageChangeHandler}
-              value={this.state.message}
+              value={this.state.messageInput.message}
               required
               type="text"
               placeholder="Type your message here..."

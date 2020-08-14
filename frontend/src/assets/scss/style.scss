@@ -74,7 +74,7 @@ body {
 
 .contact-search-box__wrapper {
   background: #fff;
-  border-radius: 40px;
+  border-radius: 7px; // 40px
 
   i {
     color: grey;
@@ -290,11 +290,14 @@ hr {
   padding: 6px 2px;
   width: 80%;
   border: none;
-  border-radius: 40px;
-  padding-left: 30px;
-  padding-right: 30px;
+  border-radius: 7px; // 40px
+  padding-left: 15px;
+  padding-right: 15px;
   line-height: 20px;
   font-size: 16px;
+  resize: none;
+  overflow-y: auto;
+  height: auto;
 
   &::placeholder {
     color: #e3e3e3;
