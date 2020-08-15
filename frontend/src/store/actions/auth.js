@@ -1,4 +1,6 @@
 import axios from "axios";
+import history from "history/browser";
+
 import * as actionTypes from "./actionTypes";
 
 export const authStart = () => {
@@ -35,6 +37,7 @@ export const checkAuthTimeout = (expirationTime) => {
   return (dispatch) => {
     setTimeout(() => {
       dispatch(logout());
+      // history.push("/");
     }, expirationTime * 1000);
   };
 };
@@ -84,12 +87,13 @@ export const authSignup = (username, email, password1, password2) => {
 export const authCheckState = () => {
   return (dispatch) => {
     const token = localStorage.getItem("token");
-    if (token === undefined) {
+    if (!Boolean(token)) {
       dispatch(logout());
     } else {
       const expirationDate = new Date(localStorage.getItem("expirationDate"));
       if (expirationDate <= new Date()) {
         dispatch(logout());
+        // history.push("/");
       } else {
         const username = localStorage.getItem("username");
         dispatch(authSuccess(username, token));

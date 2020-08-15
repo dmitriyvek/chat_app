@@ -6,19 +6,45 @@ import WebSocketInstance from "../websocket";
 class Chat extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { messageInput: { content: "", rows: 1 }, messageList: [] };
+    this.state = {
+      messageInput: { content: "", rows: 1 },
+      messageList: [],
+      currentChatId: this.props.match.params.chatID,
+    };
+    this.initialiseChat();
+  }
 
+  initialiseChat() {
     WebSocketInstance.waitForSocketConnection(() => {
       WebSocketInstance.addCallbackList(
         this.setMessageList.bind(this),
         this.addMessage.bind(this)
       );
-      WebSocketInstance.fetchMessageList(1);
+      WebSocketInstance.fetchMessageList(this.props.match.params.chatID);
     });
+    WebSocketInstance.connect(this.props.match.params.chatID);
   }
 
-  componentDidMount() {
-    WebSocketInstance.connect();
+  // componentWillReceiveProps(newProps) {
+  //   if (this.props.match.params.chatID !== newProps.match.params.chatID) {
+  //     WebSocketInstance.disconnect();
+  //     WebSocketInstance.waitForSocketConnection(() => {
+  //       WebSocketInstance.fetchMessageList(newProps.match.params.chatID);
+  //     });
+  //     WebSocketInstance.connect(newProps.match.params.chatID);
+  //   }
+  // }
+
+  static getDerivedStateFromProps(newProps, prevState) {
+    if (prevState.currentChatId !== newProps.match.params.chatID) {
+      WebSocketInstance.disconnect();
+      WebSocketInstance.waitForSocketConnection(() => {
+        WebSocketInstance.fetchMessageList(newProps.match.params.chatID);
+      });
+      WebSocketInstance.connect(newProps.match.params.chatID);
+      return { currentChatId: newProps.match.params.chatID };
+    }
+    return null;
   }
 
   addMessage(message) {
@@ -54,7 +80,7 @@ class Chat extends React.Component {
   sendMessageHandler = (event) => {
     event.preventDefault();
     const messageObject = {
-      chatId: 1,
+      chatId: this.state.currentChatId,
       author: this.props.username,
       content: this.state.messageInput.content,
     };
@@ -78,6 +104,18 @@ class Chat extends React.Component {
       </li>
     ));
   };
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  };
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
 
   render() {
     const messageList = this.state.messageList;
@@ -104,6 +142,12 @@ class Chat extends React.Component {
 
         <ul className="chat-log slide-box slide-box_chat-log">
           {messageList && this.renderMessageList(messageList)}
+          <div
+            style={{ float: "left", clear: "both" }}
+            ref={(el) => {
+              this.messagesEnd = el;
+            }}
+          ></div>
         </ul>
 
         <form className="message-input-box" onSubmit={this.sendMessageHandler}>
@@ -114,7 +158,7 @@ class Chat extends React.Component {
             rows={this.state.messageInput.rows}
             className="message-input-box__input"
             onChange={this.messageChangeHandler}
-            value={this.state.messageInput.message}
+            value={this.state.messageInput.content}
             required
             type="text"
             placeholder="Type your message here..."

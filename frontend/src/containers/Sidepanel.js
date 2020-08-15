@@ -1,26 +1,61 @@
+import axios from "axios";
 import React from "react";
 import { connect } from "react-redux";
+
 import * as actions from "../store/actions/auth";
+import Profile from "./Profile";
+import Contact from "../components/Contact";
 
 class Sidepanel extends React.Component {
+  state = {
+    chatList: [],
+  };
+
+  // componentWillReceiveProps(newProps) {
+  //   if (newProps.token !== null && newProps.username !== null) {
+  //     this.getUserChats(newProps.token, newProps.username);
+  //   }
+  // }
+
+  // componentDidUpdate(newProps) {
+  //   if (newProps.token !== null && newProps.username !== null) {
+  //     this.getUserChats(newProps.token, newProps.username);
+  //   }
+  // }
+
+  componentDidMount() {
+    if (this.props.token !== null && this.props.username !== null) {
+      this.getUserChats(this.props.token, this.props.username);
+    }
+  }
+
+  getUserChats = (token, username) => {
+    axios.defaults.headers = {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    };
+    axios
+      .get(`http://127.0.0.1:8000/chats/?username=${username}`)
+      .then((res) => this.setState({ chatList: res.data }));
+  };
+
   render() {
+    const activeChats = this.state.chatList.map((chat) => {
+      return (
+        <Contact
+          key={chat.id}
+          chatId={`/${chat.id}`}
+          name="Robo cop"
+          avatarUrl="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
+          lastMessage="Hey, you're arrested! Lorem ipsum dolor sit amet"
+          lastMessageTime="13:21"
+        />
+      );
+    });
+
     return (
       <div className="column-left">
-        <div className="profile-info-box">
-          <img
-            className="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg"
-            alt="Profile img"
-          />
-          <span className="settings-tray">
-            <button onClick={() => this.props.logout()} className="logout-btn">
-              <span>Logout</span>
-            </button>
-            <i className="material-icons">cached</i>
-            <i className="material-icons">message</i>
-            <i className="material-icons">menu</i>
-          </span>
-        </div>
+        <Profile />
 
         <div className="contact-search-box">
           <div className="contact-search-box__wrapper">
@@ -34,21 +69,7 @@ class Sidepanel extends React.Component {
         </div>
 
         <div className="contact-list slide-box slide-box_contact-list">
-          <div className="contact-box">
-            <img
-              className="profile-image"
-              src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
-              alt=""
-            />
-            <div className="contact-box__text-wrapper">
-              <h6 className="contact-box__profile_name">Robo Cop</h6>
-              <p className="contact-box__last-message-text">
-                Hey, you're arrested! Lorem ipsum dolor sit amet
-              </p>
-            </div>
-            <span className="contact-box__last-message-time">13:21</span>
-          </div>
-          <hr />
+          {activeChats}
         </div>
 
         <div className="application-settings-tray"></div>
@@ -57,10 +78,11 @@ class Sidepanel extends React.Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
   return {
-    logout: () => dispatch(actions.logout()),
+    token: state.token,
+    username: state.username,
   };
 };
 
-export default connect(null, mapDispatchToProps)(Sidepanel);
+export default connect(mapStateToProps)(Sidepanel);

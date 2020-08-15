@@ -12,6 +12,7 @@ class ChatViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
 
     def get_queryset(self):
-        username = self.request.user
-        profile = get_profile_by_username(username)
-        return profile.chat_list.prefetch_related('participant_list')
+        username = self.request.query_params.get('username', None)
+        if username:
+            profile = get_profile_by_username(username)
+            return profile.chat_list.prefetch_related('participant_list')
