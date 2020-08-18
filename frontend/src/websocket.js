@@ -1,6 +1,6 @@
 class WebSocketService {
   static instance = null;
-  callbackList = {};
+  // callbackList = {};
 
   static getInstance() {
     if (!WebSocketService.instance) {
@@ -11,23 +11,41 @@ class WebSocketService {
 
   constructor() {
     this.socketRef = null;
+    this.callbackList = {};
+    this.socketReconnectTimerId = 0;
   }
 
   connect(chatId) {
+    if (this.socketReconnectTimerId) {
+      clearTimeout(this.socketReconnectTimerId);
+      // this.socketReconnectTimerId = 0;
+    }
+    // if (this.socketRef) {
+    //   this.disconnect();
+    // }
     const path = `ws://127.0.0.1:8000/ws/chat/${chatId}/`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
+      this.fetchMessageList(chatId);
     };
     this.socketRef.onmessage = (e) => {
       this.socketNewMessage(e.data);
     };
     this.socketRef.onerror = (e) => {
-      console.log(e.message);
+      console.log("error");
     };
-    this.socketRef.onclose = () => {
-      console.log("WebSocket closed let's reopen");
-      this.connect(chatId);
+    this.socketRef.onclose = (closeEvent) => {
+      if (closeEvent.code !== 1000) {
+        console.log("WebSocket closed unexpectedly");
+        this.disconnect();
+
+        this.socketReconnectTimerId = setTimeout(() => {
+          this.connect(chatId);
+        }, 3000);
+      } else {
+        console.log("WebSocket closed on demand");
+      }
     };
   }
 
@@ -38,14 +56,13 @@ class WebSocketService {
   socketNewMessage(data) {
     const parsedData = JSON.parse(data);
     const command = parsedData.command;
-    if (Object.keys(this.callbackList).length === 0) {
-      return;
-    }
-    if (command === "message_list") {
-      this.callbackList[command](parsedData.message_list);
-    }
-    if (command === "new_message") {
-      this.callbackList[command](parsedData.message);
+    if (Object.keys(this.callbackList).length !== 0) {
+      if (command === "message_list") {
+        this.callbackList[command](parsedData.message_list);
+      }
+      if (command === "new_message") {
+        this.callbackList[command](parsedData.message);
+      }
     }
   }
 
@@ -76,27 +93,6 @@ class WebSocketService {
     } catch (err) {
       console.log(err.message);
     }
-  }
-
-  state() {
-    return this.socketRef.readyState;
-  }
-
-  waitForSocketConnection(callback) {
-    const socket = this;
-    const recursionConnectionCall = this.waitForSocketConnection;
-    setTimeout(function () {
-      if (socket.state() === 1) {
-        console.log("connection is made");
-        if (callback !== null) {
-          callback();
-        }
-        return;
-      } else {
-        console.log("waiting for connection...");
-        recursionConnectionCall(callback);
-      }
-    }, 500);
   }
 }
 

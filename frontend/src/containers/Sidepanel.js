@@ -17,9 +17,9 @@ class Sidepanel extends React.Component {
   //   }
   // }
 
-  // componentDidUpdate(newProps) {
-  //   if (newProps.token !== null && newProps.username !== null) {
-  //     this.getUserChats(newProps.token, newProps.username);
+  // componentDidUpdate() {
+  //   if (this.props.token !== null && this.props.username !== null) {
+  //     this.getUserChats(this.props.token, this.props.username);
   //   }
   // }
 

@@ -34,4 +34,4 @@ class Message(models.Model):
         ordering = ['timestamp']
 
     def __str__(self):
-        return f' by: {self.author.username} ({self.author.id}); {self.chat.title} ({self.chat.id})'
+        return f' by:{self.author.id};{self.chat.title};{self.content[:10]}'
