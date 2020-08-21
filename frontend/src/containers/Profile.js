@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
-import * as actions from "../store/actions/auth";
+import * as authActions from "../store/actions/auth";
 
 const Profile = (props) => {
   const history = useHistory();
@@ -36,13 +36,13 @@ const Profile = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    username: state.username,
+    username: state.auth.username,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    logout: () => dispatch(actions.logout()),
+    logout: () => dispatch(authActions.logout()),
   };
 };
 

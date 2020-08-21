@@ -2,13 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 
 import WebSocketInstance from "../websocket";
+import * as chatActions from "../store/actions/chat";
 
 class Chat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messageInput: { content: "", rows: 1 },
-      messageList: [],
     };
     this.initialiseChat();
   }
@@ -16,8 +16,8 @@ class Chat extends React.Component {
   initialiseChat() {
     if (Object.keys(WebSocketInstance.callbackList).length === 0) {
       WebSocketInstance.addCallbackList(
-        this.setMessageList.bind(this),
-        this.addMessage.bind(this)
+        this.props.setMessageList.bind(this),
+        this.props.newMessage.bind(this)
       );
     }
     WebSocketInstance.connect(this.props.match.params.chatID);
@@ -30,14 +30,6 @@ class Chat extends React.Component {
     }
 
     this.scrollToBottom();
-  }
-
-  setMessageList(messageList) {
-    this.setState({ messageList: messageList });
-  }
-
-  addMessage(message) {
-    this.setState({ messageList: [...this.state.messageList, message] });
   }
 
   messageChangeHandler = (event) => {
@@ -96,7 +88,7 @@ class Chat extends React.Component {
   };
 
   render() {
-    const messageList = this.state.messageList;
+    const messageList = this.props.messageList;
     return (
       <div className="column-right">
         <div className="chat-header-box">
@@ -152,8 +144,17 @@ class Chat extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    username: state.username,
+    username: state.auth.username,
+    messageList: state.chat.messageList,
   };
 };
 
-export default connect(mapStateToProps)(Chat);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    newMessage: (message) => dispatch(chatActions.newMessage(message)),
+    setMessageList: (messageList) =>
+      dispatch(chatActions.setMessageList(messageList)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

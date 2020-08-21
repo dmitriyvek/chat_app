@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import * as actions from "../store/actions/auth";
+import * as authActions from "../store/actions/auth";
 
 class AuthPage extends React.Component {
   state = {
@@ -76,17 +76,17 @@ class AuthPage extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    loading: state.loading,
+    loading: state.auth.loading,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     login: (userName, password) =>
-      dispatch(actions.authLogin(userName, password)),
+      dispatch(authActions.authLogin(userName, password)),
     // actions.authLogin(userName, password)(dispatch),
     signup: (username, email, password1, password2) =>
-      dispatch(actions.authSignup(username, email, password1, password2)),
+      dispatch(authActions.authSignup(username, email, password1, password2)),
   };
 };
 

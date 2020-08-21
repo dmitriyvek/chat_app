@@ -2,45 +2,25 @@ import axios from "axios";
 import React from "react";
 import { connect } from "react-redux";
 
-import * as actions from "../store/actions/auth";
+import * as chatActions from "../store/actions/chat";
 import Profile from "./Profile";
 import Contact from "../components/Contact";
 
 class Sidepanel extends React.Component {
-  state = {
-    chatList: [],
-  };
-
   // componentWillReceiveProps(newProps) {
   //   if (newProps.token !== null && newProps.username !== null) {
   //     this.getUserChats(newProps.token, newProps.username);
   //   }
   // }
 
-  // componentDidUpdate() {
-  //   if (this.props.token !== null && this.props.username !== null) {
-  //     this.getUserChats(this.props.token, this.props.username);
-  //   }
-  // }
-
   componentDidMount() {
     if (this.props.token !== null && this.props.username !== null) {
-      this.getUserChats(this.props.token, this.props.username);
+      this.props.getUserChatList(this.props.token, this.props.username);
     }
   }
 
-  getUserChats = (token, username) => {
-    axios.defaults.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Token ${token}`,
-    };
-    axios
-      .get(`http://127.0.0.1:8000/chats/?username=${username}`)
-      .then((res) => this.setState({ chatList: res.data }));
-  };
-
   render() {
-    const activeChats = this.state.chatList.map((chat) => {
+    const activeChats = this.props.chatList.map((chat) => {
       return (
         <Contact
           key={chat.id}
@@ -80,9 +60,17 @@ class Sidepanel extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    token: state.token,
-    username: state.username,
+    token: state.auth.token,
+    username: state.auth.username,
+    chatList: state.chat.chatList,
   };
 };
 
-export default connect(mapStateToProps)(Sidepanel);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getUserChatList: (username, token) =>
+      dispatch(chatActions.getUserChatList(username, token)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidepanel);

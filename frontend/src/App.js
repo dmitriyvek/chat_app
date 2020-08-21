@@ -2,8 +2,8 @@ import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { connect } from "react-redux";
 
-import * as actions from "./store/actions/auth";
 import BaseRouter from "./routes";
+import * as authActions from "./store/actions/auth";
 
 class App extends React.Component {
   componentDidMount() {
@@ -21,7 +21,7 @@ class App extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onTryAutoSignup: () => dispatch(actions.authCheckState()),
+    onTryAutoSignup: () => dispatch(authActions.authCheckState()),
   };
 };
 
