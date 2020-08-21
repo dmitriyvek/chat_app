@@ -15,4 +15,4 @@ class ChatViewSet(ModelViewSet):
         username = self.request.query_params.get('username', None)
         if username:
             profile = get_profile_by_username(username)
-            return profile.chat_list.prefetch_related('participant_list')
+            return profile.chat_list.prefetch_related('participant_list', 'last_message')

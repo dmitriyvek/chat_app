@@ -11,12 +11,10 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class ChatSerializer(serializers.ModelSerializer):
-    last_message = serializers.SerializerMethodField()
+    last_message = MessageSerializer(many=False, read_only=True)
 
     class Meta:
         model = Chat
         fields = ('id', 'participant_list', 'last_message')
         read_only = ('id',)
 
-    def get_last_message(self, obj):
-        return MessageSerializer(obj.message_list.last()).data

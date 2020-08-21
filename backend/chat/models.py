@@ -17,16 +17,17 @@ class Profile(models.Model):
 
 
 class Chat(models.Model):
-    participant_list = models.ManyToManyField(to=Profile, related_name='chat_list', blank=True)
+    participant_list = models.ManyToManyField(to='Profile', related_name='chat_list', blank=True)
     title = models.CharField(max_length=64)
+    last_message = models.ForeignKey(to='Message', blank=True, related_name='last_message_in_chat', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'chat_id: {self.id}; title: {self.title}'
 
 
 class Message(models.Model):
-    author = models.ForeignKey(to=Profile, related_name='message_list', on_delete=models.CASCADE)
-    chat = models.ForeignKey(to=Chat, related_name='message_list', on_delete=models.CASCADE)
+    author = models.ForeignKey(to='Profile', related_name='message_list', on_delete=models.CASCADE)
+    chat = models.ForeignKey(to='Chat', related_name='message_list', on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
