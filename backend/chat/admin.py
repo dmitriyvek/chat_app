@@ -14,7 +14,7 @@ class MessageInLine(admin.TabularInline):
 
 class ChatAdmin(admin.ModelAdmin):
     inlines = [MessageInLine]
-    search_fields = ['title']
+    # search_fields = ['title']
 
 
 admin.site.register(Chat, ChatAdmin)

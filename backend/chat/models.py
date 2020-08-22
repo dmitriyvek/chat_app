@@ -18,11 +18,10 @@ class Profile(models.Model):
 
 class Chat(models.Model):
     participant_list = models.ManyToManyField(to='Profile', related_name='chat_list', blank=True)
-    title = models.CharField(max_length=64)
-    last_message = models.ForeignKey(to='Message', blank=True, related_name='last_message_in_chat', on_delete=models.CASCADE)
+    last_message = models.ForeignKey(to='Message', blank=True, null=True, related_name='last_message_in_chat', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'chat_id: {self.id}; title: {self.title}'
+        return f'chat_id: {self.id}'
 
 
 class Message(models.Model):
@@ -35,4 +34,4 @@ class Message(models.Model):
         ordering = ['timestamp']
 
     def __str__(self):
-        return f' by:{self.author.id};{self.chat.title};{self.content[:10]}'
+        return f' by:{self.author.id};chat:{self.chat.id};{self.content[:10]}'

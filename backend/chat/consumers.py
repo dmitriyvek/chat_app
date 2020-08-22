@@ -21,11 +21,14 @@ class ChatConsumer(WebsocketConsumer):
 
     def new_message(self, data):
         author_profile = get_profile_by_username(data['author'])
+        chat = get_current_chat_by_id(data['chatId'])
         message = Message.objects.create(
             author=author_profile,
-            chat=get_current_chat_by_id(data['chatId']),
+            chat=chat,
             content=data['content']
         )
+        chat.last_message = message
+        chat.save()
         content = {
             'command': 'new_message',
             'message': self.message_to_json(message)

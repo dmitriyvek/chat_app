@@ -25,10 +25,10 @@ class Sidepanel extends React.Component {
         <Contact
           key={chat.id}
           chatId={`/${chat.id}`}
-          name="Robo cop"
+          name={chat["last_message"]["author"]}
           avatarUrl="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
-          lastMessage="Hey, you're arrested! Lorem ipsum dolor sit amet"
-          lastMessageTime="13:21"
+          lastMessage={chat["last_message"]["content"]}
+          lastMessageTime={chat["last_message"]["timestamp"]}
         />
       );
     });

@@ -4,6 +4,7 @@ from chat.models import Chat, Message
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='author.username')
 
     class Meta:
         model = Message
