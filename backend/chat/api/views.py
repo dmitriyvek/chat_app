@@ -4,7 +4,7 @@ from rest_framework import permissions
 
 from chat.models import Chat, Message
 from .serializers import ChatSerializer, MessageSerializer
-from chat.services import get_profile_by_username, get_last_message_list_from_current_chat
+from chat.services import get_profile_by_user_id, get_last_message_list_from_current_chat
 
 
 class MessageViewSet(ModelViewSet):
@@ -24,9 +24,9 @@ class ChatViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
 
     def get_queryset(self):
-        username = self.request.query_params.get('username', None)
-        if username:
-            profile = get_profile_by_username(username)
+        user_id = self.request.query_params.get('user_id', None)
+        if user_id:
+            profile = get_profile_by_user_id(user_id)
             return profile.chat_list.select_related('last_message__author').prefetch_related('participant_list')
 
 

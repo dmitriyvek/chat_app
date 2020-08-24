@@ -14,13 +14,14 @@ class Sidepanel extends React.Component {
   // }
 
   componentDidMount() {
-    if (this.props.token !== null && this.props.username !== null) {
-      this.props.getUserChatList(this.props.token, this.props.username);
+    if (this.props.token !== null && this.props.userId !== null) {
+      this.props.getUserChatList(this.props.token, this.props.userId);
     }
   }
 
   render() {
     const activeChats = this.props.chatList.map((chat) => {
+      console.log(chat);
       return (
         <Contact
           key={chat.id}
@@ -61,7 +62,7 @@ class Sidepanel extends React.Component {
 const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
-    username: state.auth.username,
+    userId: state.auth.userId,
     chatList: state.chat.chatList,
   };
 };

@@ -10,23 +10,14 @@ class Chat extends React.Component {
     this.state = {
       messageInput: { content: "", rows: 1 },
     };
-    this.initialiseChat();
-  }
-
-  initialiseChat() {
-    if (Object.keys(WebSocketInstance.callbackList).length === 0) {
-      WebSocketInstance.addCallbackList(
-        this.props.setMessageList.bind(this),
-        this.props.newMessage.bind(this)
-      );
-    }
-    WebSocketInstance.connect(this.props.match.params.chatID);
+    this.props.changeChatId(this.props.match.params.chatID);
+    WebSocketInstance.fetchMessageList(this.props.match.params.chatID);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.match.params.chatID !== prevProps.match.params.chatID) {
-      WebSocketInstance.disconnect();
-      WebSocketInstance.connect(this.props.match.params.chatID);
+      this.props.changeChatId(this.props.match.params.chatID);
+      WebSocketInstance.fetchMessageList(this.props.match.params.chatID);
     }
 
     this.scrollToBottom();
@@ -58,7 +49,8 @@ class Chat extends React.Component {
     event.preventDefault();
     const messageObject = {
       chatId: this.props.match.params.chatID,
-      author: this.props.username,
+      recipientId: this.getRecipientId(),
+      authorId: this.props.userId,
       content: this.state.messageInput.content,
     };
     WebSocketInstance.newChatMessage(messageObject);
@@ -67,9 +59,22 @@ class Chat extends React.Component {
     });
   };
 
+  getRecipientId = () => {
+    const chatId = parseInt(this.props.match.params.chatID);
+    let participantList;
+    for (let i = 0; i < this.props.chatList.length; i++) {
+      if (this.props.chatList[i].id === chatId)
+        participantList = this.props.chatList[i].participant_list;
+    }
+    return participantList.indexOf(parseInt(this.props.userId)) === 0
+      ? participantList[1]
+      : participantList[0];
+  };
+
   renderMessageList = (messageList) => {
     return messageList.map((message, i) => (
       <li
+        name={console.log("aaa")}
         key={message.id}
         className={
           message.author === this.props.username
@@ -144,16 +149,16 @@ class Chat extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
+    userId: state.auth.userId,
     username: state.auth.username,
     messageList: state.chat.messageList,
+    chatList: state.chat.chatList,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    newMessage: (message) => dispatch(chatActions.newMessage(message)),
-    setMessageList: (messageList) =>
-      dispatch(chatActions.setMessageList(messageList)),
+    changeChatId: (chatId) => dispatch(chatActions.changeChatId(chatId)),
   };
 };
 

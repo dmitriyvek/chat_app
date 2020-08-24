@@ -2,6 +2,13 @@ import axios from "axios";
 
 import * as actionTypes from "./actionTypes";
 
+export const changeChatId = (chatId) => {
+  return {
+    type: actionTypes.CHANGE_CHAT_ID,
+    chatId: chatId,
+  };
+};
+
 export const newMessage = (message) => {
   return {
     type: actionTypes.NEW_MESSAGE,
@@ -23,7 +30,7 @@ const getUserChatListSuccess = (chatList) => {
   };
 };
 
-export const getUserChatList = (token, username) => {
+export const getUserChatList = (token, userId) => {
   return (dispatch) => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
@@ -32,7 +39,7 @@ export const getUserChatList = (token, username) => {
       Authorization: `Token ${token}`,
     };
     axios
-      .get(`http://127.0.0.1:8000/chats/?username=${username}`)
+      .get(`http://127.0.0.1:8000/chats/?user_id=${userId}`)
       .then((res) => dispatch(getUserChatListSuccess(res.data)));
   };
 };

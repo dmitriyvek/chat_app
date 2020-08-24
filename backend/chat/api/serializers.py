@@ -1,6 +1,14 @@
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 from chat.models import Chat, Message
+
+
+class TokenSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Token
+        fields = ('key', 'user')
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -18,4 +26,6 @@ class ChatSerializer(serializers.ModelSerializer):
         model = Chat
         fields = ('id', 'participant_list', 'last_message')
         read_only = ('id',)
+
+
 

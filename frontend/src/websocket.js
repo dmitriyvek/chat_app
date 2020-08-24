@@ -1,6 +1,5 @@
 class WebSocketService {
   static instance = null;
-  // callbackList = {};
 
   static getInstance() {
     if (!WebSocketService.instance) {
@@ -15,19 +14,18 @@ class WebSocketService {
     this.socketReconnectTimerId = 0;
   }
 
-  connect(chatId) {
+  connect(userId) {
     if (this.socketReconnectTimerId) {
       clearTimeout(this.socketReconnectTimerId);
-      // this.socketReconnectTimerId = 0;
+      this.socketReconnectTimerId = 0;
     }
     // if (this.socketRef) {
     //   this.disconnect();
     // }
-    const path = `ws://127.0.0.1:8000/ws/chat/${chatId}/`;
+    const path = `ws://127.0.0.1:8000/ws/user/${userId}/`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
-      this.fetchMessageList(chatId);
     };
     this.socketRef.onmessage = (e) => {
       this.socketNewMessage(e.data);
@@ -41,7 +39,7 @@ class WebSocketService {
         this.disconnect();
 
         this.socketReconnectTimerId = setTimeout(() => {
-          this.connect(chatId);
+          this.connect(userId);
         }, 3000);
       } else {
         console.log("WebSocket closed on demand");
@@ -77,7 +75,8 @@ class WebSocketService {
     this.sendMessage({
       command: "new_message",
       chatId: message.chatId,
-      author: message.author,
+      authorId: message.authorId,
+      recipientId: message.recipientId,
       content: message.content,
     });
   }
