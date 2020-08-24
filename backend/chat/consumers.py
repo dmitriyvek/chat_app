@@ -1,25 +1,30 @@
 import json
-from django.contrib.auth import get_user_model
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
+from django.shortcuts import get_object_or_404
 
-from .models import Message
-from .services import get_current_chat_by_id, get_last_message_list_from_current_chat, get_profile_by_user_id
+from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
 
-User = get_user_model()
+from .models import Message, Chat
+from .services import get_current_chat_by_id, get_profile_by_user_id
 
 
-class ChatConsumer(WebsocketConsumer):
+class ChatConsumer(AsyncWebsocketConsumer):
 
-    def fetch_message_list(self, data):
-        message_list = get_last_message_list_from_current_chat(data['chatId'], 30)
+    @database_sync_to_async
+    def get_last_message_list_from_current_chat(self, chat_id, number_of_messages=30):
+        # return list(get_object_or_404(Chat, id=chat_id).message_list.prefetch_related('author')[:number_of_messages])
+        return list(get_object_or_404(Chat, id=chat_id).message_list.prefetch_related('author'))
+
+    async def fetch_message_list(self, data):
+        message_list = await self.get_last_message_list_from_current_chat(data['chatId'], number_of_messages=30)
         content = {
             'command': 'message_list',
             'message_list': self.message_list_to_json(message_list)
         }
-        self.send_message(content)
+        await self.send_message(content)
 
-    def new_message(self, data):
+    @database_sync_to_async
+    def create_new_message(self, data):
         author_profile = get_profile_by_user_id(data['authorId'])
         chat = get_current_chat_by_id(data['chatId'])
         message = Message.objects.create(
@@ -30,13 +35,18 @@ class ChatConsumer(WebsocketConsumer):
         chat.last_message = message
         chat.save()
 
+        return message
+
+    async def new_message(self, data):
+        message = await self.create_new_message(data)
+
         recipient_id = data['recipientId']
         content = {
             'command': 'new_message',
             'message': self.message_to_json(message)
         }
-        self.send_chat_message(content, recipient_id)
-        self.send_message(content)
+        await self.send_chat_message(content, recipient_id)
+        await self.send_message(content)
 
     def message_list_to_json(self, message_list):
         result = []
@@ -58,28 +68,29 @@ class ChatConsumer(WebsocketConsumer):
         'new_message': new_message
     }
 
-    def connect(self):
+    async def connect(self):
         self.user_id = self.scope['url_route']['kwargs']['user_id']
         self.user_group_name = f'user_{self.user_id}'
-        async_to_sync(self.channel_layer.group_add)(
+        await self.channel_layer.group_add(
             self.user_group_name,
             self.channel_name
         )
-        # self.groups.append(self.user_group_name)
-        self.accept()
+        # await self.groups.append(self.user_group_name)
+        await self.accept()
 
-    def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
             self.user_group_name,
             self.channel_name
         )
 
-    def receive(self, text_data):
+    async def receive(self, text_data):
         data = json.loads(text_data)
-        self.COMMAND_LIST[data['command']](self, data)
+        await self.COMMAND_LIST[data['command']](self, data)
 
-    def send_chat_message(self, message, recipient_id):
-        async_to_sync(self.channel_layer.group_send)(
+
+    async def send_chat_message(self, message, recipient_id):
+        await self.channel_layer.group_send(
             f'user_{recipient_id}',
             {
                 'type': 'chat_message',
@@ -87,9 +98,9 @@ class ChatConsumer(WebsocketConsumer):
             }
         )
 
-    def send_message(self, message):
-        self.send(text_data=json.dumps(message))
+    async def send_message(self, message):
+        await self.send(text_data=json.dumps(message))
 
-    def chat_message(self, event):
+    async def chat_message(self, event):
         message = event['message']
-        self.send(text_data=json.dumps(message))
+        await self.send(text_data=json.dumps(message))

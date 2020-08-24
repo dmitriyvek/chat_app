@@ -35,7 +35,9 @@ class WebSocketService {
     };
     this.socketRef.onclose = (closeEvent) => {
       if (closeEvent.code !== 1000) {
-        console.log("WebSocket closed unexpectedly");
+        console.log(
+          `WebSocket closed unexpectedly; close event code: ${closeEvent.code}`
+        );
         this.disconnect();
 
         this.socketReconnectTimerId = setTimeout(() => {
