@@ -25,7 +25,7 @@ class Chat(models.Model):
     participant_list = models.ManyToManyField(to='Profile', verbose_name='list of chat participant`s profiles',
                                               related_name='chat_list', blank=True)
     last_message = models.ForeignKey(to='Message', verbose_name='the last message written in this chat',
-                                     blank=True, null=True, related_name='last_message_in_chat', on_delete=models.CASCADE)
+                                     blank=True, null=True, related_name='last_message_in_chat', on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'chat_id: {self.id}'

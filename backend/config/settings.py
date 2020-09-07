@@ -11,9 +11,11 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = '_@b(j&dded65i1^e@c5f2&rr^8^yz7-ot%vs0^=t_3_kevx&7k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+]
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -35,7 +37,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'channels',
     'corsheaders',
-    'debug_toolbar',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -44,8 +45,8 @@ INSTALLED_APPS = [
     'chat.apps.ChatConfig',
 ]
 
+
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -144,6 +146,10 @@ STATICFILES_DIRS = [
 ]
 
 
+ERROR_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/error.log')
+INFO_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/info.log')
+
+
 SITE_ID = 1
 
 
@@ -171,3 +177,23 @@ CORS_ORIGIN_WHITELIST = (
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+
+# start debug-toolbar in DEBUG only because of disappearance of channels error log
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]

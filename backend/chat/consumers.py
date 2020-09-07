@@ -5,8 +5,14 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from .services import create_and_return_new_message, get_last_messages_from_current_chat, message_to_json, message_list_to_json
+from .wrappers import generic_error_handling_wrapper, wrapp_all_methods
+from .loggers import get_main_logger
 
 
+logger = get_main_logger()
+
+
+@wrapp_all_methods(generic_error_handling_wrapper(logger))
 class ChatConsumer(AsyncWebsocketConsumer):
     '''Main consumer (websocket requests handler) that can return all messages from given chat or handle new message creation'''
 
