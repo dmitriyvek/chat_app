@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from chat.models import Chat, Message
+from chat.models import Chat, Message, Profile
 
 
 class TokenSerializer(serializers.ModelSerializer):
@@ -10,6 +10,13 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
         fields = ('key', 'user')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Profile
+        exclude = ('user', 'friend_list')
 
 
 class MessageSerializer(serializers.ModelSerializer):

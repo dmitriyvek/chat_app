@@ -7,6 +7,7 @@ import thunk from "redux-thunk";
 import App from "./App";
 import authReducer from "./store/reducers/auth";
 import chatReducer from "./store/reducers/chat";
+import profileReducer from "./store/reducers/profile";
 
 import "./assets/scss/style.scss";
 
@@ -16,6 +17,7 @@ const configureStore = () => {
   const rootReducer = combineReducers({
     auth: authReducer,
     chat: chatReducer,
+    profile: profileReducer,
   });
 
   const store = createStore(

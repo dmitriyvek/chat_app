@@ -43,3 +43,10 @@ def get_last_messages_from_current_chat(chat_id: int, number_of_messages: int = 
     '''Returns given number of latest messages in given chat'''
     # return list(get_object_or_404(Chat, id=chat_id).message_list.prefetch_related('author')[:number_of_messages])
     return list(get_object_or_404(Chat, id=chat_id).message_list.prefetch_related('author'))
+
+
+def get_friend_list_of_given_user(user_id: int, number_of_profiles: Union[int, None] = None):
+    '''Returns given amount of friend`s profiles of given user'''
+    if number_of_profiles:
+        return get_object_or_404(Profile, id=user_id).friend_list.all()[:number_of_profiles]
+    return get_object_or_404(Profile, id=user_id).friend_list.all()
