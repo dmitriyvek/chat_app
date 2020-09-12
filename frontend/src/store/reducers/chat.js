@@ -14,14 +14,20 @@ const changeChatId = (state, action) => {
 };
 
 const newMessage = (state, action) => {
-  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
   // let updatedChat;
   const newChatList = [...state.chatList];
   for (let i = 0; i < newChatList.length; i++) {
     if (newChatList[i].id === action.message["chat_id"]) {
+      if (!newChatList[i]["last_message"]) {
+        newChatList[i]["last_message"] = {};
+      }
+
       newChatList[i]["last_message"].author = action.message.author;
       newChatList[i]["last_message"].content = action.message.content;
       newChatList[i]["last_message"].timestamp = action.message.timestamp;
+
+      const newFirstChatList = newChatList.splice(i, 1);
+      newChatList.unshift(newFirstChatList[0]);
       break;
     }
   }
