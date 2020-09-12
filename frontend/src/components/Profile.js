@@ -24,7 +24,7 @@ class Profile extends React.Component {
         participant_list: [parseInt(this.props.userId), this.props.profileId],
       })
       .then((res) => {
-        this.props.getUserChatList(this.props.token, this.props.userId);
+        this.props.newChat(res.data);
         this.props.history.push(`/${res.data.id}`);
         this.props.changeSidepanelContent();
         this.props.setActiveChatId(res.data.id);
@@ -84,6 +84,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(chatActions.getUserChatList(username, token)),
     setActiveChatId: (newActiveChatId) =>
       dispatch(chatActions.setActiveChatId(newActiveChatId)),
+    newChat: (chat) => dispatch(chatActions.newChat(chat)),
   };
 };
 

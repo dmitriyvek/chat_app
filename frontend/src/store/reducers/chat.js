@@ -14,6 +14,7 @@ const changeChatId = (state, action) => {
 };
 
 const newMessage = (state, action) => {
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
   // let updatedChat;
   const newChatList = [...state.chatList];
   for (let i = 0; i < newChatList.length; i++) {
@@ -34,9 +35,16 @@ const newMessage = (state, action) => {
     state.chatId === action.message["chat_id"]
       ? [...state.messageList, action.message]
       : state.messageList;
+
   return updateObject(state, {
     messageList: newMessageList,
     chatList: newChatList,
+  });
+};
+
+const newChat = (state, action) => {
+  return updateObject(state, {
+    chatList: [action.chat, ...state.chatList],
   });
 };
 
@@ -80,6 +88,8 @@ const reducer = (state = initialState, action) => {
       return changeChatId(state, action);
     case actionTypes.NEW_MESSAGE:
       return newMessage(state, action);
+    case actionTypes.NEW_CHAT:
+      return newChat(state, action);
     case actionTypes.SET_MESSAGE_LIST:
       return setMessageList(state, action);
     case actionTypes.GET_CHAT_LIST_SUCCESS:

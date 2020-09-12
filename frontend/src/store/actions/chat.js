@@ -16,6 +16,13 @@ export const newMessage = (message) => {
   };
 };
 
+export const newChat = (chat) => {
+  return {
+    type: actionTypes.NEW_CHAT,
+    chat: chat,
+  };
+};
+
 export const setMessageList = (messageList) => {
   return {
     type: actionTypes.SET_MESSAGE_LIST,
