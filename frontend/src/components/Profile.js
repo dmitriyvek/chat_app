@@ -24,9 +24,10 @@ class Profile extends React.Component {
         participant_list: [parseInt(this.props.userId), this.props.profileId],
       })
       .then((res) => {
-        this.props.history.push(`/${res.data.id}`);
         this.props.getUserChatList(this.props.token, this.props.userId);
+        this.props.history.push(`/${res.data.id}`);
         this.props.changeSidepanelContent();
+        this.props.setActiveChatId(res.data.id);
       })
       .catch((err) => {
         console.error(err);
@@ -44,6 +45,7 @@ class Profile extends React.Component {
       ) {
         this.props.history.push(`/${chatList[i]["id"]}`);
         this.props.changeSidepanelContent();
+        this.props.setActiveChatId(chatList[i]["id"]);
         return;
       }
     }
@@ -80,6 +82,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUserChatList: (username, token) =>
       dispatch(chatActions.getUserChatList(username, token)),
+    setActiveChatId: (newActiveChatId) =>
+      dispatch(chatActions.setActiveChatId(newActiveChatId)),
   };
 };
 

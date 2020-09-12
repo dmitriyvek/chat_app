@@ -46,7 +46,8 @@ class Sidepanel extends React.Component {
       return (
         <Contact
           key={chat.id}
-          chatId={`/${chat.id}`}
+          chatId={chat.id}
+          style={{ background: chat["active"] ? "#d3e7fb" : null }}
           name={chat["last_message"] ? chat["last_message"]["author"] : ""}
           avatarUrl="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
           lastMessage={

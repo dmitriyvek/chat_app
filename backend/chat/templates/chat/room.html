@@ -2,190 +2,198 @@
 
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>Chat</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
     />
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="column-left">
-            <div class="profile-info-box">
-                <img
-                    class="profile-image"
-                    src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg"
-                    alt="Profile img"
-                />
-                <span class="settings-tray">
-                    <i class="material-icons">cached</i>
-                    <i class="material-icons">message</i>
-                    <i class="material-icons">menu</i>
-                </span>
-            </div>
-
-            <div class="contact-search-box">
-                <div class="contact-search-box__wrapper">
-                    <i class="material-icons">search</i>
-                    <input
-                    class="contact-search-input"
-                    placeholder="Search here"
-                    type="text"
-                    />
-                </div>
-            </div>
-
-            <div class="contact-list slide-box slide-box_contact-list">
-                <div class="contact-box">
-                    <img
-                    class="profile-image"
-                    src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
-                    alt=""
-                    />
-                    <div class="contact-box__text-wrapper">
-                        <h6 class="contact-box__profile_name">Robo Cop</h6>
-                        <p class="contact-box__last-message-text">
-                            Hey, you're arrested! Lorem ipsum dolor sit amet
-                        </p>
-                    </div>
-                    <span class="contact-box__last-message-time">13:21</span>
-                </div>
-                <hr />
-            </div>
-
-            <div class="application-settings-tray"></div>
+      <div class="column-left">
+        <div class="profile-info-box">
+          <img
+            class="profile-image"
+            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg"
+            alt="Profile img"
+          />
+          <span class="settings-tray">
+            <i class="material-icons">cached</i>
+            <i class="material-icons">message</i>
+            <i class="material-icons">menu</i>
+          </span>
         </div>
 
-        <div class="column-right">
-            <div class="chat-header-box">
-                <img
-                    class="profile-image"
-                    src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
-                    alt=""
-                />
-                <div class="chat-header-box__text-wrapper">
-                    <h6 class="chat-header-box__profile_name">Robo Cop</h6>
-                    <p class="chat-header-box__profile-description">
-                    Layin' down the law since like before Christ...
-                    </p>
-                </div>
-                <span class="settings-tray">
-                    <i class="material-icons">cached</i>
-                    <i class="material-icons">message</i>
-                    <i class="material-icons">menu</i>
-                </span>
-            </div>
-
-            <ul class="chat-log slide-box slide-box_chat-log">
-                {% comment %} <div class="chat-message-box chat-message-box_right">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
-                    cumque minus obcaecati autem debitis asperiores natus expedita
-                    perferendis repellendus laboriosam repudiandae officiis nobis id
-                    nulla, quidem illo tenetu
-                </div>
-
-                <div class="chat-message-box chat-message-box_left">
-                    message2 text
-                </div> {% endcomment %}
-            </ul>
-
-            <form class="message-input-box" action="">
-                <i class="message-input-box__emojis-icon material-icons"
-                    >sentiment_very_satisfied</i
-                >
-                <input
-                    class="message-input-box__input"
-                    type="text"
-                    placeholder="Type your message here..."
-                />
-                <button class="message-input-box__submit-button" type="submit">
-                    <i class="material-icons">send</i>
-                </button>
-            </form>
+        <div class="contact-search-box">
+          <div class="contact-search-box__wrapper">
+            <i class="material-icons">search</i>
+            <input
+              class="contact-search-input"
+              placeholder="Search here"
+              type="text"
+            />
+          </div>
         </div>
+
+        <div class="contact-list slide-box slide-box_contact-list">
+          <div class="contact-box" style="background: #d3e7fb">
+            <img
+              class="profile-image"
+              src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
+              alt=""
+            />
+            <div class="contact-box__text-wrapper">
+              <h6 class="contact-box__profile_name">Robo Cop</h6>
+              <p class="contact-box__last-message-text">
+                Hey, you're arrested! Lorem ipsum dolor sit amet
+              </p>
+            </div>
+            <span class="contact-box__last-message-time">13:21</span>
+          </div>
+          <hr />
+        </div>
+
+        <div class="application-settings-tray"></div>
+      </div>
+
+      <div class="column-right">
+        <div class="chat-header-box">
+          <img
+            class="profile-image"
+            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
+            alt=""
+          />
+          <div class="chat-header-box__text-wrapper">
+            <h6 class="chat-header-box__profile_name">Robo Cop</h6>
+            <p class="chat-header-box__profile-description">
+              Layin' down the law since like before Christ...
+            </p>
+          </div>
+          <span class="settings-tray">
+            <i class="material-icons">cached</i>
+            <i class="material-icons">message</i>
+            <i class="material-icons">menu</i>
+          </span>
+        </div>
+
+        <ul class="chat-log slide-box slide-box_chat-log">
+          {% comment %}
+          <div class="chat-message-box chat-message-box_right">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
+            cumque minus obcaecati autem debitis asperiores natus expedita
+            perferendis repellendus laboriosam repudiandae officiis nobis id
+            nulla, quidem illo tenetu
+          </div>
+
+          <div class="chat-message-box chat-message-box_left">
+            message2 text
+          </div>
+          {% endcomment %}
+        </ul>
+
+        <form class="message-input-box" action="">
+          <i class="message-input-box__emojis-icon material-icons"
+            >sentiment_very_satisfied</i
+          >
+          <input
+            class="message-input-box__input"
+            type="text"
+            placeholder="Type your message here..."
+          />
+          <button class="message-input-box__submit-button" type="submit">
+            <i class="material-icons">send</i>
+          </button>
+        </form>
+      </div>
     </div>
 
     <script>
-        const userId = '{{ user_id }}';
-        const user = '{{ user }}'
-        const chatId = '{{ chat_id }}'
+      const userId = "{{ user_id }}";
+      const user = "{{ user }}";
+      const chatId = "{{ chat_id }}";
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/user/'
-            + userId
-            + '/'
+      const chatSocket = new WebSocket(
+        "ws://" + window.location.host + "/ws/user/" + userId + "/"
+      );
+
+      chatSocket.onopen = function (e) {
+        console.log("socket on open");
+        fetchMessageList();
+      };
+
+      chatSocket.onmessage = function (e) {
+        console.log("socket on message");
+        const data = JSON.parse(e.data);
+        if (data["command"] === "message_list") {
+          for (let i = 0; i < data["message_list"].length; i++) {
+            createMessage(data["message_list"][i]);
+          }
+        } else if (data["command"] === "new_message") {
+          createMessage(data["message"]);
+        }
+      };
+
+      chatSocket.onclose = function (e) {
+        console.error("Chat socket closed unexpectedly");
+      };
+      document.querySelector(".message-input-box__input").focus();
+      document.querySelector(".message-input-box__input").onkeyup = function (
+        e
+      ) {
+        if (e.keyCode === 13) {
+          document.querySelector(".message-input-box__submit-button").click();
+        }
+      };
+
+      const user2Id = userId === "1" ? 2 : 1;
+      console.log(user2Id);
+
+      document.querySelector(
+        ".message-input-box__submit-button"
+      ).onclick = function (e) {
+        e.preventDefault();
+        const messageInputDom = document.querySelector(
+          ".message-input-box__input"
         );
-
-        chatSocket.onopen = function(e) {
-            console.log('socket on open')
-            fetchMessageList();
+        const content = messageInputDom.value;
+        if (content) {
+          chatSocket.send(
+            JSON.stringify({
+              command: "new_message",
+              chatId: chatId,
+              authorId: userId,
+              content: content,
+              recipientId: user2Id,
+            })
+          );
         }
+        messageInputDom.value = "";
+      };
 
-        chatSocket.onmessage = function(e) {
-            console.log('socket on message')
-            const data = JSON.parse(e.data);
-            if (data['command'] === 'message_list') {
-            for (let i=0; i<data['message_list'].length; i++) {
-                createMessage(data['message_list'][i]);
-            }
-            } else if (data['command'] === 'new_message'){
-                createMessage(data['message']);
-            }
-        };
+      function fetchMessageList() {
+        chatSocket.send(
+          JSON.stringify({
+            command: "fetch_message_list",
+            chatId: chatId,
+          })
+        );
+      }
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-        document.querySelector('.message-input-box__input').focus();
-        document.querySelector('.message-input-box__input').onkeyup = function(e) {
-            if (e.keyCode === 13) {
-                document.querySelector('.message-input-box__submit-button').click();
-            }
-        };
+      function createMessage(data) {
+        const msgLiTag = document.createElement("li");
+        msgLiTag.textContent = data.content;
+        const author = data.author;
 
-        const user2Id = userId === '1' ? 2 : 1
-        console.log(user2Id)
-
-        document.querySelector('.message-input-box__submit-button').onclick = function(e) {
-            e.preventDefault();
-            const messageInputDom = document.querySelector('.message-input-box__input');
-            const content = messageInputDom.value;
-            if (content) {
-                chatSocket.send(JSON.stringify({
-                    'command': 'new_message',
-                    'chatId': chatId,
-                    'authorId': userId,
-                    'content': content,
-                    'recipientId': user2Id
-                }));
-            };
-            messageInputDom.value = '';
-        };
-
-        function fetchMessageList() {
-            chatSocket.send(JSON.stringify({
-                'command': 'fetch_message_list',
-                'chatId': chatId
-            }));
+        if (author === user) {
+          msgLiTag.className = "chat-message-box chat-message-box_right";
+        } else {
+          msgLiTag.className = "chat-message-box chat-message-box_left";
         }
-
-        function createMessage(data) {
-            const msgLiTag = document.createElement('li');
-            msgLiTag.textContent = data.content;
-            const author = data.author;
-            
-            if (author === user) {
-                msgLiTag.className = "chat-message-box chat-message-box_right";
-            } else {
-                msgLiTag.className = "chat-message-box chat-message-box_left";
-            }
-            document.querySelector('.chat-log').appendChild(msgLiTag);
-        }
+        document.querySelector(".chat-log").appendChild(msgLiTag);
+      }
     </script>
-</body>
+  </body>
 </html>

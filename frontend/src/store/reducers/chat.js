@@ -48,7 +48,29 @@ const setMessageList = (state, action) => {
 
 const setChatList = (state, action) => {
   return updateObject(state, {
-    chatList: action.chatList,
+    chatList: action.chatList.map((chat) => ({ ...chat, active: false })),
+  });
+};
+
+const setActiveChatId = (state, action) => {
+  const newChatList = [...state.chatList];
+  let setNewChat = false;
+  let setOldChat = false;
+  for (let i = 0; i < newChatList.length; i++) {
+    if (newChatList[i]["active"]) {
+      newChatList[i]["active"] = false;
+      setOldChat = true;
+    }
+    if (newChatList[i]["id"] === action.newActiveChatId) {
+      newChatList[i]["active"] = true;
+      setNewChat = true;
+    }
+    if (setOldChat && setNewChat) {
+      break;
+    }
+  }
+  return updateObject(state, {
+    chatList: newChatList,
   });
 };
 
@@ -62,6 +84,8 @@ const reducer = (state = initialState, action) => {
       return setMessageList(state, action);
     case actionTypes.GET_CHAT_LIST_SUCCESS:
       return setChatList(state, action);
+    case actionTypes.CHANGE_ACTIVE_CHAT_ID:
+      return setActiveChatId(state, action);
     default:
       return state;
   }

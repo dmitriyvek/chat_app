@@ -23,6 +23,13 @@ export const setMessageList = (messageList) => {
   };
 };
 
+export const setActiveChatId = (newActiveChatId) => {
+  return {
+    type: actionTypes.CHANGE_ACTIVE_CHAT_ID,
+    newActiveChatId: newActiveChatId,
+  };
+};
+
 const getUserChatListSuccess = (chatList) => {
   return {
     type: actionTypes.GET_CHAT_LIST_SUCCESS,
