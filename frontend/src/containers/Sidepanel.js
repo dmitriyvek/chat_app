@@ -5,7 +5,7 @@ import * as chatActions from "../store/actions/chat";
 import * as profileActions from "../store/actions/profile";
 import Profile from "../components/Profile";
 import Contact from "../components/Contact";
-import CurrentUserProfile from "./CurrentUserProfile";
+import CurrentUserProfile from "../components/CurrentUserProfile";
 
 class Sidepanel extends React.Component {
   constructor(props) {

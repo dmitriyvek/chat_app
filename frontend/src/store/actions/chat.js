@@ -23,10 +23,11 @@ export const newChat = (chat) => {
   };
 };
 
-export const setMessageList = (messageList) => {
+export const setMessageListAndCompanion = (data) => {
   return {
-    type: actionTypes.SET_MESSAGE_LIST,
-    messageList: messageList,
+    type: actionTypes.SET_MESSAGE_LIST_AND_COMPANION,
+    messageList: data["message_list"],
+    participantList: data["participant_list"],
   };
 };
 
@@ -55,5 +56,19 @@ export const getUserChatList = (token, userId) => {
     axios
       .get(`http://127.0.0.1:8000/chats/?user_id=${userId}`)
       .then((res) => dispatch(getUserChatListSuccess(res.data)));
+  };
+};
+
+export const getChatMessageAndParticipantList = (token, chatId) => {
+  return (dispatch) => {
+    axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    axios.defaults.xsrfCookieName = "csrftoken";
+    axios.defaults.headers = {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    };
+    axios
+      .get(`http://127.0.0.1:8000/chats/${chatId}`)
+      .then((res) => dispatch(setMessageListAndCompanion(res.data)));
   };
 };

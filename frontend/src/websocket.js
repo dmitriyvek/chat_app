@@ -66,13 +66,6 @@ class WebSocketService {
     }
   }
 
-  fetchMessageList(chatId) {
-    this.sendMessage({
-      command: "fetch_message_list",
-      chatId: chatId,
-    });
-  }
-
   newChatMessage(message) {
     this.sendMessage({
       command: "new_message",
@@ -83,8 +76,7 @@ class WebSocketService {
     });
   }
 
-  addCallbackList(messageListCallback, newMessageCallback) {
-    this.callbackList["message_list"] = messageListCallback;
+  addCallbackList(newMessageCallback) {
     this.callbackList["new_message"] = newMessageCallback;
   }
 

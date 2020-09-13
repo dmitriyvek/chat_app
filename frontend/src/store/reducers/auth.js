@@ -19,7 +19,7 @@ const authStart = (state, action) => {
 const authSuccess = (state, action) => {
   return updateObject(state, {
     token: action.token,
-    userId: action.userId,
+    userId: parseInt(action.userId),
     username: action.username,
     error: null,
     loading: false,

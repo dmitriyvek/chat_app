@@ -1,10 +1,11 @@
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
 
 from chat.models import Chat, Message, Profile
-from .serializers import ChatSerializer, MessageSerializer, ProfileSerializer
+from .serializers import ChatSerializer, MessageSerializer, ProfileSerializer, ChatDetailSerializer
 from chat.services import get_last_messages_from_current_chat, get_friend_list_of_given_user
 
 
@@ -30,6 +31,16 @@ class MessageViewSet(ModelViewSet):
         chat_id = self.request.query_params.get('chat_id', None)
         if chat_id:
             return get_last_messages_from_current_chat(chat_id, number_of_messages=30)
+
+
+class ChatDetailView(RetrieveAPIView):
+    model = Chat
+    serializer_class = ChatDetailSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        return Chat.objects.filter(participant_list=user_id).prefetch_related('message_list__author')
 
 
 class ChatViewSet(ModelViewSet):

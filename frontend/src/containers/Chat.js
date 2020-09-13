@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import WebSocketInstance from "../websocket";
 import * as chatActions from "../store/actions/chat";
+import ChatHeader from "../components/ChatHeader";
 
 class Chat extends React.Component {
   constructor(props) {
@@ -10,17 +11,22 @@ class Chat extends React.Component {
     this.state = {
       messageInput: { content: "", rows: 1 },
     };
-    this.props.changeChatId(this.props.match.params.chatID);
-    WebSocketInstance.fetchMessageList(this.props.match.params.chatID);
+    this.changeChat();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.match.params.chatID !== prevProps.match.params.chatID) {
-      this.props.changeChatId(this.props.match.params.chatID);
-      WebSocketInstance.fetchMessageList(this.props.match.params.chatID);
+      this.changeChat();
     }
-
     this.scrollToBottom();
+  }
+
+  changeChat() {
+    this.props.changeChatId(this.props.match.params.chatID);
+    this.props.getChatMessageAndParticipantList(
+      this.props.token,
+      this.props.match.params.chatID
+    );
   }
 
   messageChangeHandler = (event) => {
@@ -59,20 +65,27 @@ class Chat extends React.Component {
     });
   };
 
-  getRecipientId = () => {
-    const chatId = parseInt(this.props.match.params.chatID);
-    let participantList;
-    for (let i = 0; i < this.props.chatList.length; i++) {
-      if (this.props.chatList[i].id === chatId)
-        participantList = this.props.chatList[i].participant_list;
-    }
-    return participantList.indexOf(parseInt(this.props.userId)) === 0
-      ? participantList[1]
-      : participantList[0];
+  getRecipientId = () =>
+    this.props.participantList[0]["id"] === this.props.userId
+      ? this.props.participantList[1]["id"]
+      : this.props.participantList[0]["id"];
+
+  renderChatHeader = (participanList) => {
+    const companionProfile =
+      participanList[0]["id"] === this.props.userId
+        ? participanList[1]
+        : participanList[0];
+    return (
+      <ChatHeader
+        companionName={companionProfile.username}
+        companionAvatarUrl={companionProfile.avatarUrl}
+        companionDescription={companionProfile.profile_description}
+      />
+    );
   };
 
   renderMessageList = (messageList) => {
-    return messageList.map((message, i) => (
+    return messageList.map((message) => (
       <li
         name={console.log("aaa")}
         key={message.id}
@@ -94,29 +107,12 @@ class Chat extends React.Component {
 
   render() {
     const messageList = this.props.messageList;
+    const participantList = this.props.participantList;
     return (
       <div className="column-right">
-        <div className="chat-header-box">
-          <img
-            className="profile-image"
-            src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
-            alt=""
-          />
-          <div className="chat-header-box__text-wrapper">
-            <h6 className="chat-header-box__profile_name">Robo Cop</h6>
-            <p className="chat-header-box__profile-description">
-              Layin' down the law since like before Christ...
-            </p>
-          </div>
-          <span className="settings-tray">
-            <i className="material-icons">cached</i>
-            <i className="material-icons">message</i>
-            <i className="material-icons">menu</i>
-          </span>
-        </div>
-
+        {participantList.length && this.renderChatHeader(participantList)}
         <ul className="chat-log slide-box slide-box_chat-log">
-          {messageList && this.renderMessageList(messageList)}
+          {messageList.length && this.renderMessageList(messageList)}
           <div
             // style={{ float: "left", clear: "both" }}
             ref={(el) => {
@@ -151,13 +147,17 @@ const mapStateToProps = (state) => {
   return {
     userId: state.auth.userId,
     username: state.auth.username,
+    token: state.auth.token,
     messageList: state.chat.messageList,
     chatList: state.chat.chatList,
+    participantList: state.chat.participantList,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getChatMessageAndParticipantList: (token, chatId) =>
+      dispatch(chatActions.getChatMessageAndParticipantList(token, chatId)),
     changeChatId: (chatId) => dispatch(chatActions.changeChatId(chatId)),
   };
 };

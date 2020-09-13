@@ -8,15 +8,9 @@ import Chat from "./Chat";
 class RootChat extends React.Component {
   initialiseChat() {
     if (Object.keys(WebSocketInstance.callbackList).length === 0) {
-      WebSocketInstance.addCallbackList(
-        this.props.setMessageList.bind(Chat),
-        this.props.newMessage.bind(Chat)
-      );
+      WebSocketInstance.addCallbackList(this.props.newMessage.bind(Chat));
     }
-    WebSocketInstance.connect(
-      this.props.userId,
-      this.props.match.params.chatID
-    );
+    WebSocketInstance.connect(this.props.userId);
   }
 
   componentDidMount() {
@@ -24,12 +18,6 @@ class RootChat extends React.Component {
       this.initialiseChat();
     }
   }
-
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.userId !== prevProps.userId) {
-  //     this.initialiseChat();
-  //   }
-  // }
 
   render() {
     return (
@@ -51,8 +39,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     newMessage: (message) => dispatch(chatActions.newMessage(message)),
-    setMessageList: (messageList) =>
-      dispatch(chatActions.setMessageList(messageList)),
   };
 };
 

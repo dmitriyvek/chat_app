@@ -25,7 +25,16 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        exclude = ('id',)
+        exclude = ('chat',)
+
+
+class ChatDetailSerializer(serializers.ModelSerializer):
+    message_list = MessageSerializer(many=True, read_only=True)
+    participant_list = ProfileSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Chat
+        fields = ('participant_list', 'message_list')
 
 
 class ChatSerializer(serializers.ModelSerializer):
