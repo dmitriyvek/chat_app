@@ -24,7 +24,7 @@ class Sidepanel extends React.Component {
 
   componentDidMount() {
     if (this.props.token !== null && this.props.userId !== null) {
-      this.props.getUserChatList(this.props.token, this.props.userId);
+      this.props.getUserChatListAndInfo(this.props.token, this.props.userId);
     }
   }
 
@@ -48,8 +48,16 @@ class Sidepanel extends React.Component {
           key={chat.id}
           chatId={chat.id}
           style={{ background: chat["active"] ? "#d3e7fb" : null }}
-          name={chat["last_message"] ? chat["last_message"]["author"] : ""}
-          avatarUrl="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
+          name={
+            chat["last_message"]
+              ? chat["last_message"]["author"]["username"]
+              : ""
+          }
+          avatarUrl={
+            chat["last_message"]
+              ? chat["last_message"]["author"]["avatar_url"]
+              : ""
+          }
           lastMessage={
             chat["last_message"] ? chat["last_message"]["content"] : ""
           }
@@ -124,8 +132,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserChatList: (username, token) =>
-      dispatch(chatActions.getUserChatList(username, token)),
+    getUserChatListAndInfo: (username, token) =>
+      dispatch(chatActions.getUserChatListAndInfo(username, token)),
     getFriendList: (token, userId) =>
       dispatch(profileActions.getFriendList(token, userId)),
   };

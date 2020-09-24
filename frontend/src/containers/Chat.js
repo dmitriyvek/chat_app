@@ -78,7 +78,7 @@ class Chat extends React.Component {
     return (
       <ChatHeader
         companionName={companionProfile.username}
-        companionAvatarUrl={companionProfile.avatarUrl}
+        companionAvatarUrl={companionProfile.avatar_url}
         companionDescription={companionProfile.profile_description}
       />
     );

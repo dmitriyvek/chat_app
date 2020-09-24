@@ -15,10 +15,11 @@ const Profile = (props) => {
     <div className="profile-info-box">
       <img
         className="profile-image"
-        src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/filip.jpg"
+        src={props.userInfo.avatarUrl}
         alt="Profile img"
       />
       <p>{props.username}</p>
+      <p>{props.userInfo.profileDescription}</p>
       <span className="settings-tray">
         <button
           className="settings-tray__logout-btn"
@@ -37,6 +38,7 @@ const Profile = (props) => {
 const mapStateToProps = (state) => {
   return {
     username: state.auth.username,
+    userInfo: state.chat.userInfo,
   };
 };
 

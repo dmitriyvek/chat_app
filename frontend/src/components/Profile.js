@@ -20,8 +20,8 @@ class Profile extends React.Component {
       Authorization: `Token ${this.props.token}`,
     };
     axios
-      .post(`http://127.0.0.1:8000/chats/`, {
-        participant_list: [parseInt(this.props.userId), this.props.profileId],
+      .post(`http://127.0.0.1:8000/chats/create/`, {
+        participant_list: [this.props.userId, this.props.profileId],
       })
       .then((res) => {
         this.props.newChat(res.data);
@@ -38,10 +38,11 @@ class Profile extends React.Component {
     const chatList = this.props.chatList;
     for (let i = 0; i < chatList.length; i++) {
       if (
-        isSubList(chatList[i]["participant_list"], [
-          parseInt(this.props.userId),
-          this.props.profileId,
-        ])
+        // isSubList(chatList[i]["participant_list"], [
+        //   this.props.userId,
+        //   this.props.profileId,
+        // ])
+        false
       ) {
         this.props.history.push(`/${chatList[i]["id"]}`);
         this.props.changeSidepanelContent();

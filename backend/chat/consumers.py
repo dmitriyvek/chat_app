@@ -4,7 +4,7 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from .services import create_and_return_new_message, get_last_messages_from_current_chat, message_to_json, message_list_to_json
+from .services import create_and_return_new_message, message_to_json, message_list_to_json
 from .wrappers import generic_error_handling_wrapper, wrapp_all_methods
 from .loggers import get_main_logger
 
@@ -15,15 +15,6 @@ logger = get_main_logger()
 @wrapp_all_methods(generic_error_handling_wrapper(logger))
 class ChatConsumer(AsyncWebsocketConsumer):
     '''Main consumer (websocket requests handler) that can return all messages from given chat or handle new message creation'''
-
-    async def fetch_message_list(self, data: Dict[str, str]) -> None:
-        '''Handle message list fetching (getting messages in given chat and send it to client)'''
-        message_list = await database_sync_to_async(get_last_messages_from_current_chat)(data['chatId'], number_of_messages=30)
-        content = {
-            'command': 'message_list',
-            'message_list': message_list_to_json(message_list)
-        }
-        await self.send_message(content)
 
     async def new_message(self, data: Dict['str', Union[str, int]]) -> None:
         '''Handle new message creation and sending it to client and all participants in given chat'''
@@ -38,7 +29,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send_message(content)
 
     COMMAND_LIST = {
-        'fetch_message_list': fetch_message_list,
         'new_message': new_message
     }
 

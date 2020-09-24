@@ -4,6 +4,7 @@ import { updateObject } from "../../utility";
 const initialState = {
   chatId: 0,
   chatList: [],
+  userInfo: {},
   messageList: [],
   participantList: [],
 };
@@ -62,8 +63,9 @@ const setMessageListAndCompanion = (state, action) => {
   });
 };
 
-const setChatList = (state, action) => {
+const setChatListAndInfo = (state, action) => {
   return updateObject(state, {
+    userInfo: action.userInfo,
     chatList: action.chatList.map((chat) => ({ ...chat, active: false })),
   });
 };
@@ -100,8 +102,8 @@ const reducer = (state = initialState, action) => {
       return newChat(state, action);
     case actionTypes.SET_MESSAGE_LIST_AND_COMPANION:
       return setMessageListAndCompanion(state, action);
-    case actionTypes.GET_CHAT_LIST_SUCCESS:
-      return setChatList(state, action);
+    case actionTypes.GET_CHAT_LIST_AND_INFO_SUCCESS:
+      return setChatListAndInfo(state, action);
     case actionTypes.CHANGE_ACTIVE_CHAT_ID:
       return setActiveChatId(state, action);
     default:

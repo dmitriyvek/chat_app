@@ -38,14 +38,18 @@ export const setActiveChatId = (newActiveChatId) => {
   };
 };
 
-const getUserChatListSuccess = (chatList) => {
+const getUserChatListAndInfoSuccess = (data) => {
   return {
-    type: actionTypes.GET_CHAT_LIST_SUCCESS,
-    chatList: chatList,
+    type: actionTypes.GET_CHAT_LIST_AND_INFO_SUCCESS,
+    chatList: data["chat_list"],
+    userInfo: {
+      avatarUrl: data["avatar_url"],
+      profileDescription: data["profile_description"],
+    },
   };
 };
 
-export const getUserChatList = (token, userId) => {
+export const getUserChatListAndInfo = (token, userId) => {
   return (dispatch) => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
@@ -54,8 +58,8 @@ export const getUserChatList = (token, userId) => {
       Authorization: `Token ${token}`,
     };
     axios
-      .get(`http://127.0.0.1:8000/chats/?user_id=${userId}`)
-      .then((res) => dispatch(getUserChatListSuccess(res.data)));
+      .get(`http://127.0.0.1:8000/profile/${userId}`)
+      .then((res) => dispatch(getUserChatListAndInfoSuccess(res.data)));
   };
 };
 

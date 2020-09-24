@@ -11,6 +11,8 @@ class Profile(models.Model):
                              related_name='user_profile', on_delete=models.CASCADE)
     username = models.CharField(verbose_name='username from django user model (no need in sql query for getting related django`s user model)',
                                 max_length=64, blank=False)
+    avatar_url = models.URLField(
+        max_length=200, blank=True, verbose_name='url of the profile`s avatar')
     friend_list = models.ManyToManyField(verbose_name='list of friend`s profiles',
                                          to='self', blank=True)
     profile_description = models.CharField(verbose_name='text description (status) of profile written by user',

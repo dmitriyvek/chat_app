@@ -12,15 +12,23 @@ class TokenSerializer(serializers.ModelSerializer):
         fields = ('key', 'user')
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ParticipantListSerializer(serializers.ModelSerializer):
+    '''chat.Profile serializer for ChatDetailSerializer.participant_list'''
 
     class Meta:
         model = Profile
         exclude = ('user', 'friend_list')
 
 
+class ProfileSerializerForLastMessage(serializers.ModelSerializer):
+    '''chat.Profile serializer for LastMessageSerializer.author'''
+    class Meta:
+        model = Profile
+        fields = ('username', 'avatar_url')
+
+
 class MessageSerializer(serializers.ModelSerializer):
-    '''Serializer of the chat.Message model with author field that returns full username rather than user_id'''
+    '''chat.Message serializer for ChatDetailSerializer.message_list'''
     author = serializers.CharField(source='author.username')
 
     class Meta:
@@ -28,20 +36,37 @@ class MessageSerializer(serializers.ModelSerializer):
         exclude = ('chat',)
 
 
+class LastMessageSerializer(serializers.ModelSerializer):
+    '''chat.Message serializer for ChatSerializer.last_message'''
+    author = ProfileSerializerForLastMessage(many=False, read_only=True)
+
+    class Meta:
+        model = Message
+        exclude = ('chat',)
+
+
+class ChatSerializer(serializers.ModelSerializer):
+    '''Serializer of the chat.Chat model with last_message field that returns custom represantation of the chat.Message model'''
+    last_message = LastMessageSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Chat
+        fields = ('id', 'participant_list', 'last_message')
+        read_only = ('id',)
+
+
 class ChatDetailSerializer(serializers.ModelSerializer):
     message_list = MessageSerializer(many=True, read_only=True)
-    participant_list = ProfileSerializer(many=True, read_only=True)
+    participant_list = ParticipantListSerializer(many=True, read_only=True)
 
     class Meta:
         model = Chat
         fields = ('participant_list', 'message_list')
 
 
-class ChatSerializer(serializers.ModelSerializer):
-    '''Serializer of the chat.Chat model with last_message field that returns custom represantation of the chat.Message model'''
-    last_message = MessageSerializer(many=False, read_only=True)
+class MainProfileSerializer(serializers.ModelSerializer):
+    chat_list = ChatSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Chat
-        fields = ('id', 'participant_list', 'last_message')
-        read_only = ('id',)
+        model = Profile
+        fields = ('avatar_url', 'profile_description', 'chat_list')
