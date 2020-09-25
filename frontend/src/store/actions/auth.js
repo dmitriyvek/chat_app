@@ -1,5 +1,4 @@
 import axios from "axios";
-import history from "history/browser";
 
 import * as actionTypes from "./actionTypes";
 

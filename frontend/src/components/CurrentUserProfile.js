@@ -2,12 +2,14 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
+import WebSocketInstance from "../websocket";
 import * as authActions from "../store/actions/auth";
 
 const Profile = (props) => {
   const history = useHistory();
   const onLogoutBtnClick = () => {
     props.logout();
+    WebSocketInstance.disconnect();
     history.push("/");
   };
 

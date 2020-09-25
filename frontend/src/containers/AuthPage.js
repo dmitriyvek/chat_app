@@ -15,17 +15,25 @@ class AuthPage extends React.Component {
   authenticate = (event) => {
     event.preventDefault();
     if (this.state.loginForm) {
-      this.props.login(
-        event.target.username.value,
-        event.target.password.value
-      );
+      if (event.target.username.value && event.target.password.value) {
+        this.props.login(
+          event.target.username.value,
+          event.target.password.value
+        );
+      }
     } else {
-      this.props.signup(
-        event.target.username.value,
-        event.target.email.value,
-        event.target.password.value,
-        event.target.password2.value
-      );
+      if (
+        event.target.username.value &&
+        event.target.password.value &&
+        event.target.password.value === event.target.password2.value
+      ) {
+        this.props.signup(
+          event.target.username.value,
+          event.target.email.value,
+          event.target.password.value,
+          event.target.password2.value
+        );
+      }
     }
   };
 

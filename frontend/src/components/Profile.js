@@ -38,11 +38,10 @@ class Profile extends React.Component {
     const chatList = this.props.chatList;
     for (let i = 0; i < chatList.length; i++) {
       if (
-        // isSubList(chatList[i]["participant_list"], [
-        //   this.props.userId,
-        //   this.props.profileId,
-        // ])
-        false
+        isSubList(chatList[i]["participant_list"], [
+          this.props.userId,
+          this.props.profileId,
+        ])
       ) {
         this.props.history.push(`/${chatList[i]["id"]}`);
         this.props.changeSidepanelContent();
@@ -81,8 +80,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserChatList: (username, token) =>
-      dispatch(chatActions.getUserChatList(username, token)),
     setActiveChatId: (newActiveChatId) =>
       dispatch(chatActions.setActiveChatId(newActiveChatId)),
     newChat: (chat) => dispatch(chatActions.newChat(chat)),
