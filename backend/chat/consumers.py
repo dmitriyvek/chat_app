@@ -4,7 +4,7 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from .services import create_and_return_new_message, message_to_json, message_list_to_json
+from .services import create_and_return_new_message, message_to_json, message_list_to_json, get_user_avatar_url
 from .wrappers import generic_error_handling_wrapper, wrapp_all_methods
 from .loggers import get_main_logger
 
@@ -20,12 +20,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         '''Handle new message creation and sending it to client and all participants in given chat'''
         message = await database_sync_to_async(create_and_return_new_message)(data)
 
-        recipient_id = data['recipientId']
         content = {
             'command': 'new_message',
-            'message': message_to_json(message)
+            'data': {
+                'message': message_to_json(message),
+                'author_avatar_url': await database_sync_to_async(get_user_avatar_url)(user_id=data['authorId'])
+            }
         }
-        await self.send_chat_message(content, recipient_id)
+        await self.send_chat_message(content, recipient_id=data['recipientId'])
         await self.send_message(content)
 
     COMMAND_LIST = {
@@ -55,21 +57,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         await self.COMMAND_LIST[data['command']](self, data)
 
-    async def send_chat_message(self, message: Dict, recipient_id: int) -> None:
+    async def send_chat_message(self, data: Dict, recipient_id: int) -> None:
         '''Sending a new message to all chat participants except the client'''
         await self.channel_layer.group_send(
             f'user_{recipient_id}',
             {
                 'type': 'chat_message',
-                'message': message
+                'data': data
             }
         )
 
     async def chat_message(self, event: Dict) -> None:
         '''Calling on send_chat_message call to actually send the data to all chat participants'''
-        message = event['message']
-        await self.send(text_data=json.dumps(message))
+        data = event['data']
+        await self.send(text_data=json.dumps(data))
 
-    async def send_message(self, message: Dict) -> None:
-        '''Sending a message or message_list only to client'''
-        await self.send(text_data=json.dumps(message))
+    async def send_message(self, data: Dict) -> None:
+        '''Sending a messageonly to client'''
+        await self.send(text_data=json.dumps(data))

@@ -57,11 +57,8 @@ class WebSocketService {
     const parsedData = JSON.parse(data);
     const command = parsedData.command;
     if (Object.keys(this.callbackList).length !== 0) {
-      if (command === "message_list") {
-        this.callbackList[command](parsedData.message_list);
-      }
       if (command === "new_message") {
-        this.callbackList[command](parsedData.message);
+        this.callbackList[command](parsedData.data);
       }
     }
   }

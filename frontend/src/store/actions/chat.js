@@ -9,10 +9,11 @@ export const changeChatId = (chatId) => {
   };
 };
 
-export const newMessage = (message) => {
+export const newMessage = (data) => {
   return {
     type: actionTypes.NEW_MESSAGE,
-    message: message,
+    message: data.message,
+    authorAvatarUrl: data.author_avatar_url,
   };
 };
 

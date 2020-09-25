@@ -39,8 +39,13 @@ def create_and_return_new_message(data: Dict['str', Union[str, int]]) -> Message
     return message
 
 
-def get_friend_list_of_given_user(user_id: int, number_of_profiles: Union[int, None] = None):
+def get_friend_list_of_given_user(user_id: int, number_of_profiles: Union[int, None] = None) -> Profile:
     '''Returns given amount of friend`s profiles of given user'''
     if number_of_profiles:
         return get_object_or_404(Profile, id=user_id).friend_list.all()[:number_of_profiles]
     return get_object_or_404(Profile, id=user_id).friend_list.all()
+
+
+def get_user_avatar_url(user_id: int) -> str:
+    '''Returns avatar url of given user'''
+    return str(get_object_or_404(Profile, id=user_id).avatar_url)

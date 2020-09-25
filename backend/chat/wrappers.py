@@ -13,7 +13,7 @@ def generic_error_handling_wrapper(logger):
             try:
                 await function(*args, **kwargs)
             except Exception as e:
-                logger.error(e, exc_info=False)
+                logger.error(e, exc_info=True)
 
         return wrapper
 

@@ -24,7 +24,8 @@ const newMessage = (state, action) => {
         newChatList[i]["last_message"] = {};
       }
 
-      newChatList[i]["last_message"].author = action.message.author;
+      newChatList[i]["last_message"].author.username = action.message.author;
+      newChatList[i]["last_message"].author.avatar_url = action.authorAvatarUrl;
       newChatList[i]["last_message"].content = action.message.content;
       newChatList[i]["last_message"].timestamp = action.message.timestamp;
 
