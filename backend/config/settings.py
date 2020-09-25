@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
 
     'chat.apps.ChatConfig',
+    'users.apps.UsersConfig',
 ]
 
 
@@ -122,6 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -152,6 +154,12 @@ INFO_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/info.log')
 
 SITE_ID = 1
 
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -172,11 +180,6 @@ REST_AUTH_SERIALIZERS = {
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:3000',
 )
-
-
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
 # start debug-toolbar in DEBUG only because of disappearance of channels error log

@@ -79,7 +79,7 @@ class Sidepanel extends React.Component {
           profileId={profile.id}
           name={profile["username"]}
           avatarUrl="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
-          decription={profile["profile_description"]}
+          description={profile["profile_description"]}
           changeSidepanelContent={this.changeSidepanelContent}
         />
       );
