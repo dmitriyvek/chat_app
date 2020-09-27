@@ -143,9 +143,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    Path(BASE_DIR, 'static'),
-]
+# STATICFILES_DIRS = [
+#     Path(BASE_DIR, 'static'),
+# ]
 
 
 ERROR_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/error.log')
