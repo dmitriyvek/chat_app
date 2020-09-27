@@ -1,8 +1,8 @@
-import axios from "axios";
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
+import WebSocketInstance from "../websocket";
 import * as chatActions from "../store/actions/chat";
 import { isSubList } from "../utility";
 
@@ -13,25 +13,16 @@ class Profile extends React.Component {
   }
 
   startChat = (e) => {
-    axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-    axios.defaults.xsrfCookieName = "csrftoken";
-    axios.defaults.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Token ${this.props.token}`,
+    const chat = {
+      userId: this.props.userId,
+      recipientId: this.props.profileId,
     };
-    axios
-      .post(`http://127.0.0.1:8000/chats/create/`, {
-        participant_list: [this.props.userId, this.props.profileId],
-      })
-      .then((res) => {
-        this.props.newChat(res.data);
-        this.props.history.push(`/${res.data.id}`);
-        this.props.changeSidepanelContent();
-        this.props.setActiveChatId(res.data.id);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    WebSocketInstance.newChatCreation(chat);
+    this.props.history.push(`/`);
+    // this.props.history.push(`/${this.props.chatId}`);
+    this.props.changeSidepanelContent();
+    this.props.setActiveChatId(null);
+    // this.props.setActiveChatId(this.props.chatId);
   };
 
   onFriendClick(e) {
@@ -74,6 +65,7 @@ const mapStateToProps = (state) => {
   return {
     userId: state.auth.userId,
     token: state.auth.token,
+    chatId: state.chat.chatId,
     chatList: state.chat.chatList,
   };
 };
@@ -82,7 +74,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChatId: (newActiveChatId) =>
       dispatch(chatActions.setActiveChatId(newActiveChatId)),
-    newChat: (chat) => dispatch(chatActions.newChat(chat)),
   };
 };
 

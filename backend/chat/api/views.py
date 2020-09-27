@@ -5,7 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
 
 from chat.models import Chat, Message, Profile
-from .serializers import ChatSerializer, MessageSerializer, ParticipantListSerializer, ChatDetailSerializer, MainProfileSerializer
+from .serializers import MessageSerializer, ParticipantListSerializer, ChatDetailSerializer, MainProfileSerializer
 from chat.services import get_friend_list_of_given_user
 
 
@@ -31,12 +31,6 @@ class ChatDetailView(RetrieveAPIView):
         return Chat.objects.filter(participant_list=user_id).prefetch_related('message_list__author')
 
 
-class ChatCreateView(CreateAPIView):
-    model = Chat
-    serializer_class = ChatSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-
-
 class ProfileDetailView(RetrieveAPIView):
     model = Profile
     serializer_class = MainProfileSerializer
@@ -44,4 +38,5 @@ class ProfileDetailView(RetrieveAPIView):
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Profile.objects.filter(pk=user_id).prefetch_related('chat_list__last_message__author')
+        return Profile.objects.filter(pk=user_id).prefetch_related(
+            'chat_list__last_message__author', 'chat_list__participant_list')

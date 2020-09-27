@@ -60,6 +60,9 @@ class WebSocketService {
       if (command === "new_message") {
         this.callbackList[command](parsedData.data);
       }
+      if (command === "new_chat") {
+        this.callbackList[command](parsedData.data);
+      }
     }
   }
 
@@ -73,8 +76,17 @@ class WebSocketService {
     });
   }
 
-  addCallbackList(newMessageCallback) {
+  newChatCreation(chat) {
+    this.sendMessage({
+      command: "new_chat",
+      userId: chat.userId,
+      recipientId: chat.recipientId,
+    });
+  }
+
+  addCallbackList(newMessageCallback, newChatCallback) {
     this.callbackList["new_message"] = newMessageCallback;
+    this.callbackList["new_chat"] = newChatCallback;
   }
 
   sendMessage(data) {

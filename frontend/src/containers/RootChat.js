@@ -3,12 +3,14 @@ import { connect } from "react-redux";
 
 import WebSocketInstance from "../websocket";
 import * as chatActions from "../store/actions/chat";
-import Chat from "./Chat";
 
 class RootChat extends React.Component {
   initialiseChat() {
     if (Object.keys(WebSocketInstance.callbackList).length === 0) {
-      WebSocketInstance.addCallbackList(this.props.newMessage.bind(Chat));
+      WebSocketInstance.addCallbackList(
+        this.props.newMessage,
+        this.props.newChat
+      );
     }
     WebSocketInstance.connect(this.props.userId);
   }
@@ -39,6 +41,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     newMessage: (message) => dispatch(chatActions.newMessage(message)),
+    newChat: (chat) => dispatch(chatActions.newChat(chat)),
   };
 };
 

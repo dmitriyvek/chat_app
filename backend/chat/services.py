@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Any
 
 from django.shortcuts import get_object_or_404
 
@@ -6,7 +6,7 @@ from .models import Chat, Profile, Message
 
 
 def message_to_json(message: Message) -> Dict[str, Union[str, int]]:
-    '''Return dict represantation from chat.Message instanse'''
+    '''Return dict represantation of chat.Message instanse'''
     return {
         'id': message.id,  # for react list id
         'chat_id': message.chat.id,
@@ -16,8 +16,25 @@ def message_to_json(message: Message) -> Dict[str, Union[str, int]]:
     }
 
 
+def chat_to_json(chat: Chat) -> Dict[str, Any]:
+    '''Return dict represantation of chat.Chat instanse'''
+    return {
+        'id': chat.id,
+        # 'last_message': {
+        #     'author': chat.last_message.author.username,
+        #     'content': chat.last_message.content,
+        #     'timestamp': chat.last_message.timestamp,
+        # },
+        'last_message': {
+            'author': '',
+            'content': '',
+            'timestamp': '',
+        },
+    }
+
+
 def message_list_to_json(message_list: List[Message]) -> List[Dict[str, str]]:
-    '''Return list of dict represantations from list of chat.Message instanses'''
+    '''Return list of dict represantations of list of chat.Message instanses'''
     result = []
     for message in message_list:
         result.append(message_to_json(message))
@@ -37,6 +54,15 @@ def create_and_return_new_message(data: Dict['str', Union[str, int]]) -> Message
     chat.save()
 
     return message
+
+
+def create_and_return_new_chat(data: Dict['str', Union[str, int]]) -> Chat:
+    '''Create and return new chat.Chat instanse associated with given participants'''
+    chat = Chat()
+    chat.save()
+    chat.participant_list.add(data['userId'], data['recipientId'])
+
+    return chat
 
 
 def get_friend_list_of_given_user(user_id: int, number_of_profiles: Union[int, None] = None) -> Profile:

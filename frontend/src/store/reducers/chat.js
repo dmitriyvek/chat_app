@@ -40,13 +40,15 @@ const newMessage = (state, action) => {
   //   content: action.message.content,
   //   timestamp: action.message.timestamp,
   // };
-  const newMessageList =
-    state.chatId === action.message["chat_id"]
-      ? [...state.messageList, action.message]
-      : state.messageList;
+
+  if (state.chatId === action.message["chat_id"]) {
+    return updateObject(state, {
+      messageList: [...state.messageList, action.message],
+      chatList: newChatList,
+    });
+  }
 
   return updateObject(state, {
-    messageList: newMessageList,
     chatList: newChatList,
   });
 };
@@ -54,6 +56,8 @@ const newMessage = (state, action) => {
 const newChat = (state, action) => {
   return updateObject(state, {
     chatList: [action.chat, ...state.chatList],
+    // chatId: action.chat.id,
+    chatId: 0,
   });
 };
 
