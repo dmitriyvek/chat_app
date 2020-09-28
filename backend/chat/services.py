@@ -10,7 +10,8 @@ def message_to_json(message: Message) -> Dict[str, Union[str, int]]:
     return {
         'id': message.id,  # for react list id
         'chat_id': message.chat.id,
-        'author': message.author.username,
+        'author': message.author.id,
+        'author_username': message.author.username,
         'content': message.content,
         'timestamp': str(message.timestamp)
     }

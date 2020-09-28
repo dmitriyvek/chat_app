@@ -6,7 +6,8 @@ const initialState = {
   chatList: [],
   userInfo: {},
   messageList: [],
-  participantList: [],
+  companionProfile: [],
+  lastMessageIndex: 0,
 };
 
 const changeChatId = (state, action) => {
@@ -24,7 +25,8 @@ const newMessage = (state, action) => {
         newChatList[i]["last_message"] = {};
       }
 
-      newChatList[i]["last_message"].author.username = action.message.author;
+      newChatList[i]["last_message"].author.username =
+        action.message.author_username;
       newChatList[i]["last_message"].author.avatar_url = action.authorAvatarUrl;
       newChatList[i]["last_message"].content = action.message.content;
       newChatList[i]["last_message"].timestamp = action.message.timestamp;
@@ -45,6 +47,7 @@ const newMessage = (state, action) => {
     return updateObject(state, {
       messageList: [...state.messageList, action.message],
       chatList: newChatList,
+      lastMessageIndex: state.lastMessageIndex + 1,
     });
   }
 
@@ -61,10 +64,21 @@ const newChat = (state, action) => {
   });
 };
 
-const setMessageListAndCompanion = (state, action) => {
+const setChatMessageListAndCompainonProfile = (state, action) => {
   return updateObject(state, {
-    messageList: action.messageList,
-    participantList: action.participantList,
+    companionProfile: action.companionProfile,
+    messageList: action.messages["message_list"].reverse(),
+    lastMessageIndex: action.messages["last_message_index"],
+  });
+};
+
+const setMessageListChunk = (state, action) => {
+  return updateObject(state, {
+    messageList: [
+      ...action.messages["message_list"].reverse(),
+      ...state.messageList,
+    ],
+    lastMessageIndex: action.messages["last_message_index"],
   });
 };
 
@@ -105,8 +119,10 @@ const reducer = (state = initialState, action) => {
       return newMessage(state, action);
     case actionTypes.NEW_CHAT:
       return newChat(state, action);
-    case actionTypes.SET_MESSAGE_LIST_AND_COMPANION:
-      return setMessageListAndCompanion(state, action);
+    case actionTypes.SET_MESSAGE_LIST_AND_COMPANION_PROFILE:
+      return setChatMessageListAndCompainonProfile(state, action);
+    case actionTypes.SET_MESSAGE_LIST_CHUNK:
+      return setMessageListChunk(state, action);
     case actionTypes.GET_CHAT_LIST_AND_INFO_SUCCESS:
       return setChatListAndInfo(state, action);
     case actionTypes.CHANGE_ACTIVE_CHAT_ID:

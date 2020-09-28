@@ -5,7 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import permissions
 
 from chat.models import Chat, Message, Profile
-from .serializers import MessageSerializer, ParticipantListSerializer, ChatDetailSerializer, MainProfileSerializer
+from .serializers import MessageSerializer, ParticipantListSerializer, InitialChatDetailSerializer, CommonChatDetailSerializer, MainProfileSerializer
 from chat.services import get_friend_list_of_given_user
 
 
@@ -23,12 +23,28 @@ class FriendListView(ListAPIView):
 
 class ChatDetailView(RetrieveAPIView):
     model = Chat
-    serializer_class = ChatDetailSerializer
     permission_classes = (permissions.IsAuthenticated, )
+
+    def get_serializer_class(self):
+        last_message_index = int(
+            self.request.query_params.get('last_message_index', 0))
+        if last_message_index == 0:
+            return InitialChatDetailSerializer
+        return CommonChatDetailSerializer
 
     def get_queryset(self):
         user_id = self.request.user.id
-        return Chat.objects.filter(participant_list=user_id).prefetch_related('message_list__author')
+        return Chat.objects.filter(participant_list=user_id)
+
+    def get_serializer_context(self):
+        # context = super().get_serializer_context()
+        # context.update({'user_id': self.request.user.id})
+
+        return {
+            'user_id': self.request.user.id,
+            'last_message_index': int(
+                self.request.query_params.get('last_message_index', 0)),
+        }
 
 
 class ProfileDetailView(RetrieveAPIView):
@@ -39,4 +55,4 @@ class ProfileDetailView(RetrieveAPIView):
     def get_queryset(self):
         user_id = self.request.user.id
         return Profile.objects.filter(pk=user_id).prefetch_related(
-            'chat_list__last_message__author', 'chat_list__participant_list')
+            'chat_list__last_message__author')

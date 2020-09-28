@@ -24,11 +24,18 @@ export const newChat = (chat) => {
   };
 };
 
-export const setMessageListAndCompanion = (data) => {
+export const setChatMessageListAndCompainonProfile = (data) => {
   return {
-    type: actionTypes.SET_MESSAGE_LIST_AND_COMPANION,
-    messageList: data["message_list"],
-    participantList: data["participant_list"],
+    type: actionTypes.SET_MESSAGE_LIST_AND_COMPANION_PROFILE,
+    companionProfile: data["companion_profile"],
+    messages: data["messages"],
+  };
+};
+
+export const setMessageListChunk = (data) => {
+  return {
+    type: actionTypes.SET_MESSAGE_LIST_CHUNK,
+    messages: data["messages"],
   };
 };
 
@@ -64,7 +71,7 @@ export const getUserChatListAndInfo = (token, userId) => {
   };
 };
 
-export const getChatMessageAndParticipantList = (token, chatId) => {
+export const getChatData = (token, chatId, lastMessageIndex) => {
   return (dispatch) => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
@@ -73,7 +80,15 @@ export const getChatMessageAndParticipantList = (token, chatId) => {
       Authorization: `Token ${token}`,
     };
     axios
-      .get(`http://127.0.0.1:8000/chats/${chatId}`)
-      .then((res) => dispatch(setMessageListAndCompanion(res.data)));
+      .get(
+        `http://127.0.0.1:8000/chats/${chatId}/?last_message_index=${lastMessageIndex}`
+      )
+      .then((res) => {
+        if (res.data["companion_profile"]) {
+          dispatch(setChatMessageListAndCompainonProfile(res.data));
+        } else {
+          dispatch(setMessageListChunk(res.data));
+        }
+      });
   };
 };

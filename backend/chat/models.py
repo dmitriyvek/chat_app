@@ -49,7 +49,7 @@ class Message(models.Model):
         auto_now_add=True, verbose_name='message creation timestamp')
 
     class Meta:
-        ordering = ['timestamp']
+        ordering = ['-timestamp']
 
     def __str__(self):
         return f' by:{self.author.id};chat:{self.chat.id};{self.content[:10]}'

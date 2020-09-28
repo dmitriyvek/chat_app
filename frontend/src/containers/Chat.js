@@ -11,6 +11,7 @@ class Chat extends React.Component {
     this.state = {
       messageInput: { content: "", rows: 1 },
     };
+    this.handleChatLogScroll = this.handleChatLogScroll.bind(this);
     this.changeChat();
   }
 
@@ -23,10 +24,13 @@ class Chat extends React.Component {
 
   changeChat() {
     this.props.changeChatId(this.props.match.params.chatID);
-    this.props.getChatMessageAndParticipantList(
-      this.props.token,
-      this.props.match.params.chatID
-    );
+    if (this.props.lastMessageIndex !== null) {
+      this.props.getChatData(
+        this.props.token,
+        this.props.match.params.chatID,
+        0
+      );
+    }
   }
 
   messageChangeHandler = (event) => {
@@ -55,7 +59,7 @@ class Chat extends React.Component {
     event.preventDefault();
     const messageObject = {
       chatId: this.props.match.params.chatID,
-      recipientId: this.getRecipientId(),
+      recipientId: this.props.companionProfile.id,
       authorId: this.props.userId,
       content: this.state.messageInput.content,
     };
@@ -65,16 +69,7 @@ class Chat extends React.Component {
     });
   };
 
-  getRecipientId = () =>
-    this.props.participantList[0]["id"] === this.props.userId
-      ? this.props.participantList[1]["id"]
-      : this.props.participantList[0]["id"];
-
-  renderChatHeader = (participanList) => {
-    const companionProfile =
-      participanList[0]["id"] === this.props.userId
-        ? participanList[1]
-        : participanList[0];
+  renderChatHeader = (companionProfile) => {
     return (
       <ChatHeader
         companionName={companionProfile.username}
@@ -90,7 +85,7 @@ class Chat extends React.Component {
         name={console.log("aaa")}
         key={message.id}
         className={
-          message.author === this.props.username
+          message.author === this.props.userId
             ? "chat-message-box chat-message-box_right"
             : "chat-message-box chat-message-box_left"
         }
@@ -105,13 +100,28 @@ class Chat extends React.Component {
     this.messagesEnd.scrollIntoView();
   };
 
+  handleChatLogScroll = (e) => {
+    if (e.target.scrollTop === 0) {
+      if (this.props.lastMessageIndex !== null) {
+        this.props.getChatData(
+          this.props.token,
+          this.props.match.params.chatID,
+          this.props.lastMessageIndex
+        );
+      }
+    }
+  };
+
   render() {
     const messageList = this.props.messageList;
-    const participantList = this.props.participantList;
+    const companionProfile = this.props.companionProfile;
     return (
       <div className="column-right">
-        {participantList.length && this.renderChatHeader(participantList)}
-        <ul className="chat-log slide-box slide-box_chat-log">
+        {companionProfile && this.renderChatHeader(companionProfile)}
+        <ul
+          className="chat-log slide-box slide-box_chat-log"
+          onScroll={this.handleChatLogScroll}
+        >
           {messageList.length && this.renderMessageList(messageList)}
           <div
             // style={{ float: "left", clear: "both" }}
@@ -146,18 +156,18 @@ class Chat extends React.Component {
 const mapStateToProps = (state) => {
   return {
     userId: state.auth.userId,
-    username: state.auth.username,
     token: state.auth.token,
     messageList: state.chat.messageList,
+    lastMessageIndex: state.chat.lastMessageIndex,
     chatList: state.chat.chatList,
-    participantList: state.chat.participantList,
+    companionProfile: state.chat.companionProfile,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getChatMessageAndParticipantList: (token, chatId) =>
-      dispatch(chatActions.getChatMessageAndParticipantList(token, chatId)),
+    getChatData: (token, chatId, last_message_index) =>
+      dispatch(chatActions.getChatData(token, chatId, last_message_index)),
     changeChatId: (chatId) => dispatch(chatActions.changeChatId(chatId)),
   };
 };

@@ -29,7 +29,7 @@ class ProfileSerializerForLastMessage(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     '''chat.Message serializer for ChatDetailSerializer.message_list'''
-    author = serializers.CharField(source='author.username')
+    # author = serializers.CharField(source='author.username')
 
     class Meta:
         model = Message
@@ -51,20 +51,62 @@ class ChatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chat
+        queryset = Chat.objects.get(pk=1)
         fields = ('id', 'participant_list', 'last_message')
         read_only = ('id',)
 
 
-class ChatDetailSerializer(serializers.ModelSerializer):
-    message_list = MessageSerializer(many=True, read_only=True)
-    participant_list = ParticipantListSerializer(many=True, read_only=True)
+class InitialChatDetailSerializer(serializers.ModelSerializer):
+    '''Serializer of the chat.Chat model that should be used on first chat opening'''
+    companion_profile = serializers.SerializerMethodField(
+        'get_companion_profile')
+    messages = serializers.SerializerMethodField(
+        'get_message_list_and_last_message_index')
 
     class Meta:
         model = Chat
-        fields = ('participant_list', 'message_list')
+        fields = ('companion_profile', 'messages')
+
+    def get_companion_profile(self, obj):
+        '''Returns profile of given user companion'''
+        queryset = obj.participant_list.exclude(pk=self.context['user_id'])[0]
+        return ParticipantListSerializer(instance=queryset, many=False).data
+
+    def get_message_list_and_last_message_index(self, obj):
+        '''Returns first messages chunk and last_message_index that could not be None'''
+        queryset = obj.message_list.all()[:20]
+        return {
+            'last_message_index': 20,
+            'message_list': MessageSerializer(instance=queryset, many=True).data,
+        }
+
+
+class CommonChatDetailSerializer(serializers.ModelSerializer):
+    '''Serializer of chat.Chat model that should be used to get regular messages chunk after initial chat opening'''
+    messages = serializers.SerializerMethodField(
+        'get_message_list_and_last_message_index')
+
+    class Meta:
+        model = Chat
+        fields = ('messages',)
+
+    def get_message_list_and_last_message_index(self, obj):
+        '''Returns regular messages chunk and last_message_index that could be None (means that there is no more messages in this chat)'''
+        last_message_index = self.context['last_message_index']
+        queryset = obj.message_list.all(
+        )[last_message_index:last_message_index+20]
+
+        last_message_index = None if len(
+            queryset) == 0 else last_message_index + 20
+
+        return {
+            'last_message_index': last_message_index,
+            'message_list': MessageSerializer(instance=queryset, many=True).data,
+        }
 
 
 class MainProfileSerializer(serializers.ModelSerializer):
+    '''Serializer of chat.Profile model that returns all client-important information about given user and all his open chats'''
     chat_list = ChatSerializer(many=True, read_only=True)
 
     class Meta:
