@@ -51,7 +51,6 @@ class ChatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chat
-        queryset = Chat.objects.get(pk=1)
         fields = ('id', 'participant_list', 'last_message')
         read_only = ('id',)
 

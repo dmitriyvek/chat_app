@@ -44,10 +44,16 @@ const newMessage = (state, action) => {
   // };
 
   if (state.chatId === action.message["chat_id"]) {
+    if (state.lastMessageIndex) {
+      return updateObject(state, {
+        messageList: [...state.messageList, action.message],
+        chatList: newChatList,
+        lastMessageIndex: state.lastMessageIndex + 1,
+      });
+    }
     return updateObject(state, {
       messageList: [...state.messageList, action.message],
       chatList: newChatList,
-      lastMessageIndex: state.lastMessageIndex + 1,
     });
   }
 
