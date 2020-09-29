@@ -73,10 +73,13 @@ class InitialChatDetailSerializer(serializers.ModelSerializer):
         return ParticipantListSerializer(instance=queryset, many=False).data
 
     def get_message_list_and_last_message_index(self, obj):
-        '''Returns first messages chunk and last_message_index that could not be None'''
+        '''Returns first messages chunk and last_message_index that could be None if ther are less then 20 messages in chat'''
         queryset = obj.message_list.all()[:20]
+        last_message_index = None if len(
+            queryset) < 20 else 20
+
         return {
-            'last_message_index': 20,
+            'last_message_index': last_message_index,
             'message_list': MessageSerializer(instance=queryset, many=True).data,
         }
 
@@ -97,7 +100,7 @@ class CommonChatDetailSerializer(serializers.ModelSerializer):
         )[last_message_index:last_message_index+20]
 
         last_message_index = None if len(
-            queryset) == 0 else last_message_index + 20
+            queryset) < 20 else last_message_index + 20
 
         return {
             'last_message_index': last_message_index,

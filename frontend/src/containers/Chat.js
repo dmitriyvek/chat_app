@@ -23,14 +23,8 @@ class Chat extends React.Component {
   }
 
   changeChat() {
+    this.props.getChatData(this.props.token, this.props.match.params.chatID, 0);
     this.props.changeChatId(this.props.match.params.chatID);
-    if (this.props.lastMessageIndex !== null) {
-      this.props.getChatData(
-        this.props.token,
-        this.props.match.params.chatID,
-        0
-      );
-    }
   }
 
   messageChangeHandler = (event) => {
@@ -101,7 +95,7 @@ class Chat extends React.Component {
   };
 
   handleChatLogScroll = (e) => {
-    if (e.target.scrollTop === 0) {
+    if (e.target.scrollTop === 0 && this.props.lastMessageIndex !== null) {
       if (this.props.lastMessageIndex !== null) {
         this.props.getChatData(
           this.props.token,
