@@ -21,15 +21,14 @@ def chat_to_json(chat: Chat) -> Dict[str, Any]:
     '''Return dict represantation of chat.Chat instanse'''
     return {
         'id': chat.id,
-        # 'last_message': {
-        #     'author': chat.last_message.author.username,
-        #     'content': chat.last_message.content,
-        #     'timestamp': chat.last_message.timestamp,
-        # },
         'last_message': {
-            'author': '',
-            'content': '',
-            'timestamp': '',
+            'author': {
+                'username': chat.last_message.author.username,
+                'avatar_url': chat.last_message.author.avatar_url,
+            },
+            'content': chat.last_message.content,
+            'timestamp': chat.last_message.timestamp.isoformat(),
+            'is_service': True,
         },
     }
 
@@ -59,11 +58,20 @@ def create_and_return_new_message(data: Dict['str', Union[str, int]]) -> Message
 
 def create_and_return_new_chat(data: Dict['str', Union[str, int]]) -> Chat:
     '''Create and return new chat.Chat instanse associated with given participants'''
-    chat = Chat()
-    chat.save()
-    chat.participant_list.add(data['userId'], data['recipientId'])
+    author_profile = get_object_or_404(Profile, pk=data['userId'])
 
-    return chat
+    new_chat = Chat(created_by=author_profile)
+    new_chat.save()
+
+    service_start_chat_message = Message(
+        author=author_profile, chat=new_chat, content=f'chat started by: {author_profile.username}', is_service=True)
+    service_start_chat_message.save()
+
+    new_chat.last_message = service_start_chat_message
+    new_chat.save()
+    new_chat.participant_list.add(data['userId'], data['recipientId'])
+
+    return new_chat
 
 
 def get_friend_list_of_given_user(user_id: int, number_of_profiles: Union[int, None] = None) -> Profile:

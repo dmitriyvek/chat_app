@@ -79,7 +79,9 @@ class Chat extends React.Component {
         name={console.log("aaa")}
         key={message.id}
         className={
-          message.author === this.props.userId
+          message.is_service
+            ? "chat-message-box chat-message-service_message"
+            : message.author === this.props.userId
             ? "chat-message-box chat-message-box_right"
             : "chat-message-box chat-message-box_left"
         }

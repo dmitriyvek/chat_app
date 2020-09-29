@@ -29,7 +29,9 @@ class Chat(models.Model):
     participant_list = models.ManyToManyField(to='Profile', verbose_name='list of chat participant`s profiles',
                                               related_name='chat_list', blank=True)
     last_message = models.ForeignKey(to='Message', verbose_name='the last message written in this chat',
-                                     blank=True, null=True, related_name='last_message_in_chat', on_delete=models.SET_NULL)
+                                     blank=True, null=True, related_name='last_message_in_chat', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(to='Profile', verbose_name='profile of user that created this chat',
+                                   related_name='created_chat_list', on_delete=models.DO_NOTHING)
 
     class Meta:
         ordering = ['-last_message__timestamp']
@@ -47,6 +49,8 @@ class Message(models.Model):
     content = models.TextField(verbose_name='text of message')
     timestamp = models.DateTimeField(
         auto_now_add=True, verbose_name='message creation timestamp')
+    is_service = models.BooleanField(
+        default=False, verbose_name='if message contains technical info')
 
     class Meta:
         ordering = ['-timestamp']

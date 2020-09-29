@@ -42,7 +42,7 @@ class LastMessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        exclude = ('chat',)
+        exclude = ('id', 'chat')
 
 
 class ChatSerializer(serializers.ModelSerializer):

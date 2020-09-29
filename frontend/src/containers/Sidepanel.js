@@ -47,23 +47,14 @@ class Sidepanel extends React.Component {
         <Contact
           key={chat.id}
           chatId={chat.id}
-          style={{ background: chat["active"] ? "#d3e7fb" : null }}
-          name={
-            chat["last_message"]
-              ? chat["last_message"]["author"]["username"]
-              : ""
-          }
-          avatarUrl={
-            chat["last_message"]
-              ? chat["last_message"]["author"]["avatar_url"]
-              : ""
-          }
-          lastMessage={
-            chat["last_message"] ? chat["last_message"]["content"] : ""
-          }
-          lastMessageTime={
-            chat["last_message"] ? chat["last_message"]["timestamp"] : ""
-          }
+          style={{
+            background: chat["active"] ? "#d3e7fb" : null,
+            fontStyle: chat["last_message"]["is_service"] ? "italic" : "normal",
+          }}
+          name={chat["last_message"]["author"]["username"]}
+          avatarUrl={chat["last_message"]["author"]["avatar_url"]}
+          lastMessage={chat["last_message"]["content"]}
+          lastMessageTime={chat["last_message"]["timestamp"]}
         />
       );
     });

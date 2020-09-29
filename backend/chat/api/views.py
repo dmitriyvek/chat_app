@@ -55,4 +55,4 @@ class ProfileDetailView(RetrieveAPIView):
     def get_queryset(self):
         user_id = self.request.user.id
         return Profile.objects.filter(pk=user_id).prefetch_related(
-            'chat_list__last_message__author')
+            'chat_list__last_message__author', 'chat_list__participant_list')
