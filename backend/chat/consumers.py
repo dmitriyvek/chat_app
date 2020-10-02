@@ -4,7 +4,7 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from .services import create_and_return_new_message, message_to_json, message_list_to_json, get_user_avatar_url, create_and_return_new_chat, chat_to_json
+from .services import create_and_return_new_message, message_to_json, message_list_to_json, get_user_avatar_url, create_and_return_new_chat, chat_to_json, get_user_id_by_token
 from .wrappers import generic_error_handling_wrapper, wrapp_all_methods
 from .loggers import get_main_logger
 
@@ -51,7 +51,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self) -> None:
         '''Open a connection with the client'''
-        self.user_id = self.scope['url_route']['kwargs']['user_id']
+        token = self.scope['url_route']['kwargs']['token']
+        self.user_id = await database_sync_to_async(get_user_id_by_token)(token=str(token))
         self.user_group_name = f'user_{self.user_id}'
         await self.channel_layer.group_add(
             self.user_group_name,

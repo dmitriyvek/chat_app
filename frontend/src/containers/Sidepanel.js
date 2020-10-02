@@ -6,6 +6,7 @@ import * as profileActions from "../store/actions/profile";
 import Profile from "../components/Profile";
 import Contact from "../components/Contact";
 import CurrentUserProfile from "../components/CurrentUserProfile";
+import WebSocketInstance from "../websocket";
 
 class Sidepanel extends React.Component {
   constructor(props) {
@@ -14,6 +15,17 @@ class Sidepanel extends React.Component {
       display: "chatList",
     };
     this.changeSidepanelContent = this.changeSidepanelContent.bind(this);
+    this.initialiseWebSocket();
+  }
+
+  initialiseWebSocket() {
+    if (Object.keys(WebSocketInstance.callbackList).length === 0) {
+      WebSocketInstance.addCallbackList(
+        this.props.newMessage,
+        this.props.newChat
+      );
+    }
+    WebSocketInstance.connect(this.props.token);
   }
 
   // componentWillReceiveProps(newProps) {
@@ -127,6 +139,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(chatActions.getUserChatListAndInfo(username, token)),
     getFriendList: (token, userId) =>
       dispatch(profileActions.getFriendList(token, userId)),
+    newMessage: (message) => dispatch(chatActions.newMessage(message)),
+    newChat: (chat) => dispatch(chatActions.newChat(chat)),
   };
 };
 

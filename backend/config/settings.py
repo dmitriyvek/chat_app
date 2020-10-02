@@ -15,6 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'localhost',
 ]
 
 INTERNAL_IPS = [
@@ -180,6 +181,9 @@ REST_AUTH_SERIALIZERS = {
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:3000',
 )
+
+
+CSRF_COOKIE_NAME = "csrftoken"  # default
 
 
 # start debug-toolbar in DEBUG only because of disappearance of channels error log

@@ -14,7 +14,7 @@ class WebSocketService {
     this.socketReconnectTimerId = 0;
   }
 
-  connect(userId) {
+  connect(token) {
     if (this.socketReconnectTimerId) {
       clearTimeout(this.socketReconnectTimerId);
       this.socketReconnectTimerId = 0;
@@ -22,7 +22,7 @@ class WebSocketService {
     // if (this.socketRef) {
     //   this.disconnect();
     // }
-    const path = `ws://127.0.0.1:8000/ws/user/${userId}/`;
+    const path = `ws://127.0.0.1:8000/ws/user/${token}/`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
@@ -31,7 +31,7 @@ class WebSocketService {
       this.socketNewMessage(e.data);
     };
     this.socketRef.onerror = (e) => {
-      console.log("error");
+      console.log("error:", e.data);
     };
     this.socketRef.onclose = (closeEvent) => {
       if (closeEvent.code !== 1000) {
@@ -41,7 +41,7 @@ class WebSocketService {
         this.disconnect();
 
         this.socketReconnectTimerId = setTimeout(() => {
-          this.connect(userId);
+          this.connect(token);
         }, 3000);
       } else {
         console.log("WebSocket closed on demand");

@@ -1,6 +1,7 @@
 from typing import List, Dict, Union, Any
 
 from django.shortcuts import get_object_or_404
+from rest_framework.authtoken.models import Token
 
 from .models import Chat, Profile, Message
 
@@ -84,3 +85,8 @@ def get_friend_list_of_given_user(user_id: int, number_of_profiles: Union[int, N
 def get_user_avatar_url(user_id: int) -> str:
     '''Returns avatar url of given user'''
     return str(get_object_or_404(Profile, id=user_id).avatar_url)
+
+
+def get_user_id_by_token(token: str) -> int:
+    '''Return id of user associated with given token '''
+    return get_object_or_404(Token, key=token).user.id

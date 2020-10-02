@@ -1,26 +1,6 @@
 import React from "react";
-import { connect } from "react-redux";
-
-import WebSocketInstance from "../websocket";
-import * as chatActions from "../store/actions/chat";
 
 class RootChat extends React.Component {
-  initialiseChat() {
-    if (Object.keys(WebSocketInstance.callbackList).length === 0) {
-      WebSocketInstance.addCallbackList(
-        this.props.newMessage,
-        this.props.newChat
-      );
-    }
-    WebSocketInstance.connect(this.props.userId);
-  }
-
-  componentDidMount() {
-    if (this.props.userId) {
-      this.initialiseChat();
-    }
-  }
-
   render() {
     return (
       <div className="column-right">
@@ -32,17 +12,4 @@ class RootChat extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userId: state.auth.userId,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    newMessage: (message) => dispatch(chatActions.newMessage(message)),
-    newChat: (chat) => dispatch(chatActions.newChat(chat)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RootChat);
+export default RootChat;
