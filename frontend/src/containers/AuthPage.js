@@ -29,7 +29,6 @@ class AuthPage extends React.Component {
       ) {
         this.props.signup(
           event.target.username.value,
-          event.target.email.value,
           event.target.password.value,
           event.target.password2.value
         );
@@ -57,7 +56,6 @@ class AuthPage extends React.Component {
               ) : (
                 <div>
                   <input name="username" type="text" placeholder="username" />
-                  <input name="email" type="email" placeholder="email" />
                   <input
                     name="password"
                     type="password"
@@ -93,8 +91,8 @@ const mapDispatchToProps = (dispatch) => {
     login: (userName, password) =>
       dispatch(authActions.authLogin(userName, password)),
     // actions.authLogin(userName, password)(dispatch),
-    signup: (username, email, password1, password2) =>
-      dispatch(authActions.authSignup(username, email, password1, password2)),
+    signup: (username, password1, password2) =>
+      dispatch(authActions.authSignup(username, password1, password2)),
   };
 };
 

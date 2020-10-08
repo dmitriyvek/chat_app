@@ -57,13 +57,13 @@ const getUserChatListAndInfoSuccess = (data) => {
   };
 };
 
-export const getUserChatListAndInfo = (token, userId) => {
+export const getUserChatListAndInfo = (accessToken, userId) => {
   return (dispatch) => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
     axios.defaults.headers = {
       "Content-Type": "application/json",
-      Authorization: `Token ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     };
     axios
       .get(`http://127.0.0.1:8000/profile/${userId}`)
@@ -71,13 +71,13 @@ export const getUserChatListAndInfo = (token, userId) => {
   };
 };
 
-export const getChatData = (token, chatId, lastMessageIndex) => {
+export const getChatData = (accessToken, chatId, lastMessageIndex) => {
   return (dispatch) => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
     axios.defaults.headers = {
       "Content-Type": "application/json",
-      Authorization: `Token ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     };
     axios
       .get(

@@ -9,16 +9,16 @@ const getFriendListSuccess = (friendList) => {
   };
 };
 
-export const getFriendList = (token, userId) => {
+export const getFriendList = (accessToken, userId) => {
   return (dispatch) => {
     axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     axios.defaults.xsrfCookieName = "csrftoken";
     axios.defaults.headers = {
       "Content-Type": "application/json",
-      Authorization: `Token ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     };
     axios
       .get(`http://127.0.0.1:8000/friends/?user_id=${userId}`)
-      .then((res) => dispatch(getFriendListSuccess(res.data)));
+      .then((response) => dispatch(getFriendListSuccess(response.data)));
   };
 };

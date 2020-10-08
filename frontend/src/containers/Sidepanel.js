@@ -25,18 +25,15 @@ class Sidepanel extends React.Component {
         this.props.newChat
       );
     }
-    WebSocketInstance.connect(this.props.token);
+    WebSocketInstance.connect(this.props.accessToken);
   }
 
-  // componentWillReceiveProps(newProps) {
-  //   if (newProps.token !== null && newProps.username !== null) {
-  //     this.getUserChats(newProps.token, newProps.username);
-  //   }
-  // }
-
   componentDidMount() {
-    if (this.props.token !== null && this.props.userId !== null) {
-      this.props.getUserChatListAndInfo(this.props.token, this.props.userId);
+    if (this.props.accessToken !== null && this.props.userId !== null) {
+      this.props.getUserChatListAndInfo(
+        this.props.accessToken,
+        this.props.userId
+      );
     }
   }
 
@@ -44,7 +41,7 @@ class Sidepanel extends React.Component {
     if (this.state.display === "chatList") {
       this.setState({ display: "friendList" });
       if (!this.props.friendList.length) {
-        this.props.getFriendList(this.props.token, this.props.userId);
+        this.props.getFriendList(this.props.accessToken, this.props.userId);
       }
     }
     if (this.state.display === "friendList") {
@@ -126,7 +123,7 @@ class Sidepanel extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    token: state.auth.token,
+    accessToken: state.auth.accessToken,
     userId: state.auth.userId,
     chatList: state.chat.chatList,
     friendList: state.profile.friendList,
@@ -135,10 +132,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getUserChatListAndInfo: (username, token) =>
-      dispatch(chatActions.getUserChatListAndInfo(username, token)),
-    getFriendList: (token, userId) =>
-      dispatch(profileActions.getFriendList(token, userId)),
+    getUserChatListAndInfo: (username, accessToken) =>
+      dispatch(chatActions.getUserChatListAndInfo(username, accessToken)),
+    getFriendList: (accessToken, userId) =>
+      dispatch(profileActions.getFriendList(accessToken, userId)),
     newMessage: (message) => dispatch(chatActions.newMessage(message)),
     newChat: (chat) => dispatch(chatActions.newChat(chat)),
   };

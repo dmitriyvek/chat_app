@@ -1,15 +1,6 @@
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
 
 from chat.models import Chat, Message, Profile
-
-
-class TokenSerializer(serializers.ModelSerializer):
-    '''Serializer of the rest-auth`s token model with additional user_id field'''
-
-    class Meta:
-        model = Token
-        fields = ('key', 'user')
 
 
 class ParticipantListSerializer(serializers.ModelSerializer):

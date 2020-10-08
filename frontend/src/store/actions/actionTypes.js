@@ -2,6 +2,7 @@ export const AUTH_START = "AUTH_START/AUTH";
 export const AUTH_SUCCESS = "AUTH_SUCCESS/AUTH";
 export const AUTH_FAIL = "AUTH_FAIL/AUTH";
 export const AUTH_LOGOUT = "AUTH_LOGOUT/AUTH";
+export const SET_ACCESS_TOKEN = "SET_ACCESS_TOKEN/AUTH";
 
 export const NEW_MESSAGE = "NEW_MESSAGE/CHAT";
 export const NEW_CHAT = "NEW_CHAT/CHAT";

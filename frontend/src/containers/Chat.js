@@ -23,7 +23,11 @@ class Chat extends React.Component {
   }
 
   changeChat() {
-    this.props.getChatData(this.props.token, this.props.match.params.chatID, 0);
+    this.props.getChatData(
+      this.props.accessToken,
+      this.props.match.params.chatID,
+      0
+    );
     this.props.changeChatId(this.props.match.params.chatID);
   }
 
@@ -100,7 +104,7 @@ class Chat extends React.Component {
     if (e.target.scrollTop === 0 && this.props.lastMessageIndex !== null) {
       if (this.props.lastMessageIndex !== null) {
         this.props.getChatData(
-          this.props.token,
+          this.props.accessToken,
           this.props.match.params.chatID,
           this.props.lastMessageIndex
         );
@@ -152,7 +156,7 @@ class Chat extends React.Component {
 const mapStateToProps = (state) => {
   return {
     userId: state.auth.userId,
-    token: state.auth.token,
+    accessToken: state.auth.accessToken,
     messageList: state.chat.messageList,
     lastMessageIndex: state.chat.lastMessageIndex,
     chatList: state.chat.chatList,
@@ -162,8 +166,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getChatData: (token, chatId, last_message_index) =>
-      dispatch(chatActions.getChatData(token, chatId, last_message_index)),
+    getChatData: (accessToken, chatId, last_message_index) =>
+      dispatch(
+        chatActions.getChatData(accessToken, chatId, last_message_index)
+      ),
     changeChatId: (chatId) => dispatch(chatActions.changeChatId(chatId)),
   };
 };

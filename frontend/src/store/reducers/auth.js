@@ -2,7 +2,8 @@ import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../../utility";
 
 const initialState = {
-  token: null,
+  accessToken: null,
+  refreshToken: null,
   username: null,
   userId: null,
   error: null,
@@ -18,7 +19,8 @@ const authStart = (state, action) => {
 
 const authSuccess = (state, action) => {
   return updateObject(state, {
-    token: action.token,
+    accessToken: action.accessToken,
+    refreshToken: action.refreshToken,
     userId: parseInt(action.userId),
     username: action.username,
     error: null,
@@ -35,9 +37,16 @@ const authFail = (state, action) => {
 
 const authLogout = (state, action) => {
   return updateObject(state, {
-    token: null,
+    accessToken: null,
+    refreshToken: null,
     userId: null,
     username: null,
+  });
+};
+
+const setAccessToken = (state, action) => {
+  return updateObject(state, {
+    accessToken: action.accessToken,
   });
 };
 
@@ -51,6 +60,8 @@ const reducer = (state = initialState, action) => {
       return authFail(state, action);
     case actionTypes.AUTH_LOGOUT:
       return authLogout(state, action);
+    case actionTypes.SET_ACCESS_TOKEN:
+      return setAccessToken(state, action);
     default:
       return state;
   }

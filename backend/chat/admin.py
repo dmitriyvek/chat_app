@@ -20,7 +20,6 @@ class MessageInLine(admin.TabularInline):
 
 
 class ChatAdmin(admin.ModelAdmin):
-    fields = ['participant_list', 'last_message']
     raw_id_fields = ['last_message']
 
 

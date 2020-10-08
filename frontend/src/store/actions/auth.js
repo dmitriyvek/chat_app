@@ -1,4 +1,5 @@
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 import * as actionTypes from "./actionTypes";
 
@@ -8,10 +9,11 @@ export const authStart = () => {
   };
 };
 
-export const authSuccess = (username, userId, token) => {
+export const authSuccess = (username, userId, tokenList) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
-    token: token,
+    accessToken: tokenList["access"],
+    refreshToken: tokenList["refresh"],
     username: username,
     userId: userId,
   };
@@ -25,63 +27,149 @@ export const authFail = (error) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("token");
+  clearTimeout(localStorage.getItem("accessTimerId"));
+  clearTimeout(localStorage.getItem("refreshTimerId"));
+
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
   localStorage.removeItem("userId");
   localStorage.removeItem("username");
-  localStorage.removeItem("expirationDate");
+  localStorage.removeItem("accessTokenExpirationDate");
+  localStorage.removeItem("refreshTokenExpirationDate");
+  localStorage.removeItem("accessTimerId");
+  localStorage.removeItem("refreshTimerId");
+
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
 };
 
-export const checkAuthTimeout = (expirationTime) => {
-  return (dispatch) => {
-    setTimeout(() => {
-      dispatch(logout());
-      console.log("time is over");
-      // history.push("/");
-    }, expirationTime * 1000);
+export const setAccessToken = (accessToken) => {
+  return {
+    type: actionTypes.SET_ACCESS_TOKEN,
+    accessToken: accessToken,
   };
 };
 
-const onLoginResponse = (response, dispatch, username) => {
-  const token = response.data.key;
-  const userId = response.data.user;
-  const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-  localStorage.setItem("token", token);
-  localStorage.setItem("userId", userId);
-  localStorage.setItem("username", username);
-  localStorage.setItem("expirationDate", expirationDate);
-  dispatch(authSuccess(username, userId, token));
-  dispatch(checkAuthTimeout(3600));
+export const newAccessToken = (data) => {
+  return (dispatch) => {
+    localStorage.setItem("accessToken", data["access"]);
+
+    const accessTokenExpirationDate = new Date(
+      jwt_decode(data["access"])["exp"] * 1000
+    );
+    localStorage.setItem(
+      "accessTokenExpirationDate",
+      accessTokenExpirationDate
+    );
+
+    dispatch(setAccessToken(data["access"]));
+    dispatch(
+      checkAccessTokenTimeout(
+        accessTokenExpirationDate.getTime() - new Date().getTime()
+      )
+    );
+  };
 };
 
-export const authLogin = (username, password) => {
+export const checkRefreshTokenTimeout = (expirationTime) => {
   return (dispatch) => {
-    dispatch(authStart());
+    const refreshTimerId = setTimeout(() => {
+      dispatch(logout());
+      console.log("time is over");
+      // history.push("/");
+    }, expirationTime);
+    localStorage.setItem("accessTimerId", refreshTimerId);
+  };
+};
+
+export const checkAccessTokenTimeout = (expirationTime) => {
+  return (dispatch) => {
+    const accessTimerId = setTimeout(() => {
+      dispatch(getNewAccessToken());
+    }, expirationTime);
+    localStorage.setItem("accessTimerId", accessTimerId);
+  };
+};
+
+export const getNewAccessToken = () => {
+  return (dispatch) => {
+    const refreshToken = localStorage.getItem("refreshToken");
     axios
-      .post("http://127.0.0.1:8000/rest-auth/login/", {
-        username: username,
-        password: password,
+      .post("http://127.0.0.1:8000/api-auth/login/refresh/", {
+        refresh: refreshToken,
       })
-      .then((response) => onLoginResponse(response, dispatch, username))
+      .then((response) => dispatch(newAccessToken(response.data)))
       .catch((err) => {
         dispatch(authFail(err));
       });
   };
 };
 
-export const authSignup = (username, email, password1, password2) => {
+const onLoginResponse = (response, username) => {
+  return (dispatch) => {
+    const tokenList = response.data;
+    const decodedAccessToken = jwt_decode(tokenList["access"]);
+    const userId = decodedAccessToken["sub"];
+    const accessTokenExpirationDate = new Date(
+      decodedAccessToken["exp"] * 1000
+    );
+    const refreshTokenExpirationDate = new Date(
+      jwt_decode(tokenList["refresh"])["exp"] * 1000
+    );
+
+    localStorage.setItem("accessToken", tokenList["access"]);
+    localStorage.setItem("refreshToken", tokenList["refresh"]);
+    localStorage.setItem("userId", userId);
+    localStorage.setItem("username", username);
+    localStorage.setItem(
+      "accessTokenExpirationDate",
+      accessTokenExpirationDate
+    );
+    localStorage.setItem(
+      "refreshTokenExpirationDate",
+      refreshTokenExpirationDate
+    );
+
+    dispatch(authSuccess(username, userId, tokenList));
+    dispatch(
+      checkAccessTokenTimeout(
+        accessTokenExpirationDate.getTime() - new Date().getTime()
+      )
+    );
+    dispatch(
+      checkRefreshTokenTimeout(
+        refreshTokenExpirationDate.getTime() - new Date().getTime()
+      )
+    );
+  };
+};
+
+export const authLogin = (username, password) => {
   return (dispatch) => {
     dispatch(authStart());
     axios
-      .post("http://127.0.0.1:8000/rest-auth/registration/", {
+      .post("http://127.0.0.1:8000/api-auth/login/", {
         username: username,
-        email: email,
+        password: password,
+      })
+      .then((response) => dispatch(onLoginResponse(response, username)))
+      .catch((err) => {
+        dispatch(authFail(err));
+      });
+  };
+};
+
+export const authSignup = (username, password1, password2) => {
+  return (dispatch) => {
+    dispatch(authStart());
+    axios
+      .post("http://127.0.0.1:8000/api-auth/signup/", {
+        username: username,
         password1: password1,
         password2: password2,
       })
-      .then((response) => onLoginResponse(response, dispatch, username))
+      .then((response) => dispatch(onLoginResponse(response, username)))
       .catch((err) => {
         dispatch(authFail(err));
       });
@@ -90,21 +178,42 @@ export const authSignup = (username, email, password1, password2) => {
 
 export const authCheckState = () => {
   return (dispatch) => {
-    const token = localStorage.getItem("token");
-    if (!Boolean(token)) {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!Boolean(refreshToken)) {
       dispatch(logout());
     } else {
-      const expirationDate = new Date(localStorage.getItem("expirationDate"));
-      if (expirationDate <= new Date()) {
+      const refreshTokenExpirationDate = new Date(
+        localStorage.getItem("refreshTokenExpirationDate")
+      );
+
+      if (refreshTokenExpirationDate <= new Date()) {
         dispatch(logout());
         // history.push("/");
       } else {
+        let accessTokenExpirationDate = new Date(
+          localStorage.getItem("accessTokenExpirationDate")
+        );
+        if (accessTokenExpirationDate <= new Date()) {
+          dispatch(getNewAccessToken());
+        } else {
+          dispatch(
+            checkAccessTokenTimeout(
+              accessTokenExpirationDate.getTime() - new Date().getTime()
+            )
+          );
+        }
+
         const userId = localStorage.getItem("userId");
         const username = localStorage.getItem("username");
-        dispatch(authSuccess(username, userId, token));
+        const tokenList = {
+          access: localStorage.getItem("accessToken"),
+          refresh: refreshToken,
+        };
+        dispatch(authSuccess(username, userId, tokenList));
+
         dispatch(
-          checkAuthTimeout(
-            (expirationDate.getTime() - new Date().getTime()) / 1000
+          checkRefreshTokenTimeout(
+            refreshTokenExpirationDate.getTime() - new Date().getTime()
           )
         );
       }

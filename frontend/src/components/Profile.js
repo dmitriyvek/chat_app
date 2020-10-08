@@ -64,7 +64,6 @@ class Profile extends React.Component {
 const mapStateToProps = (state) => {
   return {
     userId: state.auth.userId,
-    token: state.auth.token,
     chatId: state.chat.chatId,
     chatList: state.chat.chatList,
   };

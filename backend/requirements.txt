@@ -17,7 +17,7 @@ chardet==3.0.4
 colorama==0.4.3
 constantly==15.1.0
 contextlib2==0.6.0
-cryptography==3.0
+cryptography==2.9.2
 daphne==2.5.0
 decorator==4.4.2
 defusedxml==0.6.0
@@ -27,8 +27,8 @@ Django==3.1
 django-allauth==0.42.0
 django-cors-headers==3.4.0
 django-debug-toolbar==2.2
-django-rest-auth==0.9.5
 djangorestframework==3.11.1
+djangorestframework-simplejwt==4.4.0
 hiredis==1.1.0
 html5lib==1.0.1
 hyperlink==20.0.1
@@ -59,6 +59,7 @@ pycodestyle==2.6.0
 pycparser==2.20
 Pygments==2.6.1
 PyHamcrest==2.0.2
+PyJWT==1.7.1
 pylint==2.5.3
 pyOpenSSL==19.1.0
 pyparsing==2.4.6
