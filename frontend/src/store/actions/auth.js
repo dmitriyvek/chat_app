@@ -1,15 +1,17 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
+import WebSocketInstance from "../../websocket";
 import * as actionTypes from "./actionTypes";
 
-export const authStart = () => {
+const authStart = () => {
   return {
     type: actionTypes.AUTH_START,
   };
 };
 
-export const authSuccess = (username, userId, tokenList) => {
+const authSuccess = (username, userId, tokenList) => {
+  WebSocketInstance.connect(tokenList["access"]);
   return {
     type: actionTypes.AUTH_SUCCESS,
     accessToken: tokenList["access"],
@@ -19,39 +21,21 @@ export const authSuccess = (username, userId, tokenList) => {
   };
 };
 
-export const authFail = (error) => {
+const authFail = (error) => {
   return {
     type: actionTypes.AUTH_FAIL,
     error: error,
   };
 };
 
-export const logout = () => {
-  clearTimeout(localStorage.getItem("accessTimerId"));
-  clearTimeout(localStorage.getItem("refreshTimerId"));
-
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-  localStorage.removeItem("userId");
-  localStorage.removeItem("username");
-  localStorage.removeItem("accessTokenExpirationDate");
-  localStorage.removeItem("refreshTokenExpirationDate");
-  localStorage.removeItem("accessTimerId");
-  localStorage.removeItem("refreshTimerId");
-
-  return {
-    type: actionTypes.AUTH_LOGOUT,
-  };
-};
-
-export const setAccessToken = (accessToken) => {
+const setAccessToken = (accessToken) => {
   return {
     type: actionTypes.SET_ACCESS_TOKEN,
     accessToken: accessToken,
   };
 };
 
-export const newAccessToken = (data) => {
+const newAccessToken = (data) => {
   return (dispatch) => {
     localStorage.setItem("accessToken", data["access"]);
 
@@ -72,7 +56,7 @@ export const newAccessToken = (data) => {
   };
 };
 
-export const checkRefreshTokenTimeout = (expirationTime) => {
+const checkRefreshTokenTimeout = (expirationTime) => {
   return (dispatch) => {
     const refreshTimerId = setTimeout(() => {
       dispatch(logout());
@@ -83,7 +67,7 @@ export const checkRefreshTokenTimeout = (expirationTime) => {
   };
 };
 
-export const checkAccessTokenTimeout = (expirationTime) => {
+const checkAccessTokenTimeout = (expirationTime) => {
   return (dispatch) => {
     const accessTimerId = setTimeout(() => {
       dispatch(getNewAccessToken());
@@ -92,7 +76,7 @@ export const checkAccessTokenTimeout = (expirationTime) => {
   };
 };
 
-export const getNewAccessToken = () => {
+const getNewAccessToken = () => {
   return (dispatch) => {
     const refreshToken = localStorage.getItem("refreshToken");
     axios
@@ -218,5 +202,23 @@ export const authCheckState = () => {
         );
       }
     }
+  };
+};
+
+export const logout = () => {
+  clearTimeout(localStorage.getItem("accessTimerId"));
+  clearTimeout(localStorage.getItem("refreshTimerId"));
+
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("username");
+  localStorage.removeItem("accessTokenExpirationDate");
+  localStorage.removeItem("refreshTokenExpirationDate");
+  localStorage.removeItem("accessTimerId");
+  localStorage.removeItem("refreshTimerId");
+
+  return {
+    type: actionTypes.AUTH_LOGOUT,
   };
 };
