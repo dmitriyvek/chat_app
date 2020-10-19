@@ -17,6 +17,7 @@ chardet==3.0.4
 colorama==0.4.3
 constantly==15.1.0
 contextlib2==0.6.0
+coreschema==0.0.4
 cryptography==2.9.2
 daphne==2.5.0
 decorator==4.4.2
@@ -38,9 +39,12 @@ ipaddr==2.2.0
 ipython==7.17.0
 ipython-genutils==0.2.0
 isort==4.3.21
+itypes==1.2.0
 jedi==0.17.2
+Jinja2==2.11.2
 lazy-object-proxy==1.4.3
 lockfile==0.12.2
+MarkupSafe==1.1.1
 mccabe==0.6.1
 msgpack==1.0.0
 oauthlib==3.1.0
@@ -76,6 +80,7 @@ toml==0.10.1
 traitlets==4.3.3
 Twisted==20.3.0
 txaio==20.4.1
+uritemplate==3.0.1
 urllib3==1.25.8
 wcwidth==0.2.5
 webencodings==0.5.1

@@ -18,7 +18,7 @@ export const getFriendList = (accessToken, userId) => {
       Authorization: `Bearer ${accessToken}`,
     };
     axios
-      .get(`http://127.0.0.1:8000/friends/?user_id=${userId}`)
+      .get(`http://127.0.0.1:8000/friends/`)
       .then((response) => dispatch(getFriendListSuccess(response.data)));
   };
 };

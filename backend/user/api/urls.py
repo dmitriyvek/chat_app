@@ -7,7 +7,7 @@ from .views import UserRegistrationView, CustomTokenObtainPairView
 app_name = 'user'
 urlpatterns = [
     path('login/', CustomTokenObtainPairView.as_view(),
-         name='token_obtain_pair'),
+         name='login'),
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signup/', UserRegistrationView.as_view(), name='signup'),
 ]

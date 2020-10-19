@@ -81,7 +81,7 @@ export const getChatData = (accessToken, chatId, lastMessageIndex) => {
     };
     axios
       .get(
-        `http://127.0.0.1:8000/chats/${chatId}/?last_message_index=${lastMessageIndex}`
+        `http://127.0.0.1:8000/chats/${chatId}?last_message_index=${lastMessageIndex}`
       )
       .then((res) => {
         if (res.data["companion_profile"]) {
