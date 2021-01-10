@@ -21,13 +21,26 @@ class FriendListView(ListAPIView):
             return get_friend_list_of_given_user(user_id)
 
 
+class AllProfilesListView(ListAPIView):
+    '''A ListView that returns profiles of all users'''
+    model = Profile
+    serializer_class = ParticipantListSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_queryset(self):
+        return Profile.objects.exclude(id=self.request.user.id)
+
+
 class ChatDetailView(RetrieveAPIView):
     model = Chat
     permission_classes = (permissions.IsAuthenticated, )
 
     def get_serializer_class(self):
-        last_message_index = int(
-            self.request.query_params.get('last_message_index', 0))
+        try:
+            last_message_index = int(
+                self.request.query_params.get('last_message_index', 0))
+        except ValueError:
+            pass
         if last_message_index == 0:
             return InitialChatDetailSerializer
         return CommonChatDetailSerializer
@@ -39,11 +52,15 @@ class ChatDetailView(RetrieveAPIView):
     def get_serializer_context(self):
         # context = super().get_serializer_context()
         # context.update({'user_id': self.request.user.id})
+        try:
+            last_message_index = int(
+                self.request.query_params.get('last_message_index', 0))
+        except ValueError:
+            last_message_index = 0
 
         return {
             'user_id': self.request.user.id,
-            'last_message_index': int(
-                self.request.query_params.get('last_message_index', 0)),
+            'last_message_index': last_message_index,
         }
 
 

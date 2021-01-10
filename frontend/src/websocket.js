@@ -63,13 +63,16 @@ class WebSocketService {
       if (command === "new_chat") {
         this.callbackList[command](parsedData.data);
       }
+      if (command === "new_friend") {
+        this.callbackList[command](parsedData.data);
+      }
     }
   }
 
   newChatMessage(message) {
     this.sendMessage({
       command: "new_message",
-      chatId: message.chatId,
+      chatId: parseInt(message.chatId),
       authorId: message.authorId,
       recipientId: message.recipientId,
       content: message.content,
@@ -84,9 +87,18 @@ class WebSocketService {
     });
   }
 
-  addCallbackList(newMessageCallback, newChatCallback) {
+  newFriendCreation(idList) {
+    this.sendMessage({
+      command: "new_friend",
+      userId: idList.userId,
+      friendId: idList.friendId,
+    });
+  }
+
+  addCallbackList(newMessageCallback, newChatCallback, newFriendCallback) {
     this.callbackList["new_message"] = newMessageCallback;
     this.callbackList["new_chat"] = newChatCallback;
+    this.callbackList["new_friend"] = newFriendCallback;
   }
 
   sendMessage(data) {

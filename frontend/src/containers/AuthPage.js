@@ -30,7 +30,6 @@ class AuthPage extends React.Component {
         this.props.signup(
           event.target.username.value,
           event.target.password.value,
-          event.target.password2.value
         );
       }
     }
@@ -91,8 +90,8 @@ const mapDispatchToProps = (dispatch) => {
     login: (userName, password) =>
       dispatch(authActions.authLogin(userName, password)),
     // actions.authLogin(userName, password)(dispatch),
-    signup: (username, password1, password2) =>
-      dispatch(authActions.authSignup(username, password1, password2)),
+    signup: (username, password) =>
+      dispatch(authActions.authSignup(username, password)),
   };
 };
 

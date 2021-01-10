@@ -15,9 +15,9 @@ class TokenAuthMiddleware:
         # Store the ASGI application we were passed
         self.inner = inner
 
-    def __call__(self, scope):
+    async def __call__(self, scope, receive, send):
         # Close old database connections to prevent usage of timed out connections
-        # close_old_connections()
+        await database_sync_to_async(close_old_connections)()
         token = parse_qs(scope["query_string"].decode("utf8"))[
             "token"][0]
 
@@ -28,7 +28,8 @@ class TokenAuthMiddleware:
             if token['token_type'] != 'access':
                 raise InvalidToken
             user_id = token['sub']
+            scope['user_id'] = user_id
         except (InvalidToken, TokenError) as e:
             raise e
 
-        return self.inner(dict(scope, user_id=1))
+        return await self.inner(scope, receive, send)

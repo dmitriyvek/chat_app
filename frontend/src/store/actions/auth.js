@@ -144,14 +144,13 @@ export const authLogin = (username, password) => {
   };
 };
 
-export const authSignup = (username, password1, password2) => {
+export const authSignup = (username, password) => {
   return (dispatch) => {
     dispatch(authStart());
     axios
       .post("http://127.0.0.1:8000/api-auth/signup/", {
         username: username,
-        password1: password1,
-        password2: password2,
+        password: password,
       })
       .then((response) => dispatch(onLoginResponse(response, username)))
       .catch((err) => {

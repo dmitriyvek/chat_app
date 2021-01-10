@@ -3,9 +3,10 @@ import { connect } from "react-redux";
 
 import * as chatActions from "../store/actions/chat";
 import * as profileActions from "../store/actions/profile";
-import Profile from "../components/Profile";
+import FriendProfile from "../components/FriendProfile";
 import Contact from "../components/Contact";
 import CurrentUserProfile from "../components/CurrentUserProfile";
+import UserProfile from "../components/UserProfile";
 
 class Sidepanel extends React.Component {
   constructor(props) {
@@ -13,7 +14,9 @@ class Sidepanel extends React.Component {
     this.state = {
       display: "chatList",
     };
-    this.changeSidepanelContent = this.changeSidepanelContent.bind(this);
+    this.displayChatList = this.displayChatList.bind(this);
+    this.displayFriendList = this.displayFriendList.bind(this);
+    this.displayUserList = this.displayUserList.bind(this);
   }
 
   componentDidMount() {
@@ -25,21 +28,26 @@ class Sidepanel extends React.Component {
     }
   }
 
-  changeSidepanelContent(e) {
-    if (this.state.display === "chatList") {
-      this.setState({ display: "friendList" });
-      if (!this.props.friendList.length) {
-        this.props.getFriendList(this.props.accessToken, this.props.userId);
-      }
+  displayChatList(e) {
+    this.setState({ display: "chatList" });
+  }
+
+  displayFriendList(e) {
+    this.setState({ display: "friendList" });
+    if (!this.props.friendList.length) {
+      this.props.getFriendList(this.props.accessToken);
     }
-    if (this.state.display === "friendList") {
-      this.setState({ display: "chatList" });
+  }
+
+  displayUserList(e) {
+    this.setState({ display: "userList" });
+    if (!this.props.userList.length) {
+      this.props.getUserList(this.props.accessToken);
     }
   }
 
   getActiveChatList() {
     const chatList = this.props.chatList.map((chat) => {
-      console.log(chat);
       return (
         <Contact
           key={chat.id}
@@ -60,19 +68,34 @@ class Sidepanel extends React.Component {
 
   getFriendList() {
     const friendList = this.props.friendList.map((profile) => {
-      console.log(profile);
       return (
-        <Profile
+        <FriendProfile
           key={profile.id}
           profileId={profile.id}
           name={profile["username"]}
           avatarUrl="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
           description={profile["profile_description"]}
-          changeSidepanelContent={this.changeSidepanelContent}
+          changeSidepanelContent={this.displayChatList}
         />
       );
     });
     return friendList;
+  }
+
+  getUserList() {
+    const userList = this.props.userList.map((profile) => {
+      return (
+        <UserProfile
+          key={profile.id}
+          profileId={profile.id}
+          name={profile["username"]}
+          avatarUrl="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg"
+          description={profile["profile_description"]}
+          changeSidepanelContent={this.displayFriendList}
+        />
+      );
+    });
+    return userList;
   }
 
   render() {
@@ -91,16 +114,30 @@ class Sidepanel extends React.Component {
           </div>
         </div>
 
-        <button onClick={this.changeSidepanelContent}>
-          {this.state.display === "chatList"
-            ? "show friend list"
-            : "show chat list"}
+        <button onClick={this.displayChatList}>
+          {"chats"}
+        </button>
+        <button onClick={this.displayFriendList}>
+          {"friends"}
+        </button>
+        <button onClick={this.displayUserList}>
+          {"users"}
         </button>
 
         <div className="contact-list slide-box slide-box_contact-list">
           {this.state.display === "chatList"
+            ? "chat list"
+            : this.state.display === "friendList"
+              ? "friend list"
+              : "user list"
+          }
+
+          {this.state.display === "chatList"
             ? this.getActiveChatList()
-            : this.getFriendList()}
+            : this.state.display === "friendList"
+              ? this.getFriendList()
+              : this.getUserList()
+          }
         </div>
 
         <div className="application-settings-tray"></div>
@@ -115,6 +152,7 @@ const mapStateToProps = (state) => {
     userId: state.auth.userId,
     chatList: state.chat.chatList,
     friendList: state.profile.friendList,
+    userList: state.profile.userList,
   };
 };
 
@@ -122,8 +160,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUserChatListAndInfo: (username, accessToken) =>
       dispatch(chatActions.getUserChatListAndInfo(username, accessToken)),
-    getFriendList: (accessToken, userId) =>
-      dispatch(profileActions.getFriendList(accessToken, userId)),
+    getFriendList: (accessToken) =>
+      dispatch(profileActions.getFriendList(accessToken)),
+    getUserList: (accessToken) =>
+      dispatch(profileActions.getUserList(accessToken)),
   };
 };
 

@@ -80,7 +80,6 @@ class Chat extends React.Component {
   renderMessageList = (messageList) => {
     return messageList.map((message) => (
       <li
-        name={console.log("aaa")}
         key={message.id}
         className={
           message.is_service

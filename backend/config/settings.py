@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = '_@b(j&dded65i1^e@c5f2&rr^8^yz7-ot%vs0^=t_3_kevx&7k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -163,7 +163,8 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_CLAIM': 'sub',
 }
@@ -171,6 +172,7 @@ SIMPLE_JWT = {
 
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:3000',
+    'http://localhost:3000',
 )
 
 

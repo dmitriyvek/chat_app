@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 
 from .models import Chat, Profile, Message
+from .api.serializers import ParticipantListSerializer
 
 
 def message_to_json(message: Message) -> Dict[str, Union[str, int]]:
@@ -57,6 +58,7 @@ def create_and_return_new_message(data: Dict['str', Union[str, int]]) -> Message
     return message
 
 
+# TODO: make transaction
 def create_and_return_new_chat(data: Dict['str', Union[str, int]]) -> Chat:
     '''Create and return new chat.Chat instanse associated with given participants'''
     author_profile = get_object_or_404(Profile, pk=data['userId'])
@@ -85,3 +87,24 @@ def get_friend_list_of_given_user(user_id: int, number_of_profiles: Union[int, N
 def get_user_avatar_url(user_id: int) -> str:
     '''Returns avatar url of given user'''
     return str(get_object_or_404(Profile, id=user_id).avatar_url)
+
+
+def add_new_friend(data: dict) -> dict:
+    '''Adds new friend to given user and returns both profiles'''
+    user_id, friend_id = data['userId'], data['friendId']
+    profile_list = Profile.objects.filter(id__in=[user_id, friend_id])
+    for profile in profile_list:
+        if profile.id == user_id:
+            user_profile = ParticipantListSerializer(profile)
+        else:
+            friend_profile = ParticipantListSerializer(profile)
+
+    if profile.id == user_id:
+        profile.friend_list.add(friend_id)
+    else:
+        profile.friend_list.add(user_id)
+
+    return {
+        'user_profile': user_profile.data,
+        'friend_profile': friend_profile.data,
+    }

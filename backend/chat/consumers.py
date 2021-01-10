@@ -4,7 +4,7 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from .services import create_and_return_new_message, message_to_json, message_list_to_json, get_user_avatar_url, create_and_return_new_chat, chat_to_json
+from .services import create_and_return_new_message, message_to_json, message_list_to_json, get_user_avatar_url, create_and_return_new_chat, chat_to_json, add_new_friend
 from .wrappers import generic_error_handling_wrapper, wrapp_all_methods
 from .loggers import get_main_logger
 
@@ -44,9 +44,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send_data_to_companions(content, recipient_id=data['recipientId'])
         await self.send_data_to_client(content)
 
+    async def new_friend(self, data: Dict[str, int]) -> None:
+        '''Handle new friend creation and sending it to client and his friend'''
+        profile_list = await database_sync_to_async(add_new_friend)(data)
+
+        content_for_user = {
+            'command': 'new_friend',
+            'data': profile_list['friend_profile'],
+        }
+        content_for_friend = {
+            'command': 'new_friend',
+            'data': profile_list['user_profile'],
+        }
+        await self.send_data_to_companions(content_for_friend, recipient_id=data['friendId'])
+        await self.send_data_to_client(content_for_user)
+
     COMMAND_LIST = {
         'new_message': new_message,
         'new_chat': new_chat,
+        'new_friend': new_friend,
     }
 
     async def connect(self) -> None:
