@@ -9,11 +9,11 @@ const ChatHeader = (props) => (
         {props.companionDescription}
       </p>
     </div>
-    <span className="settings-tray">
+    {/* <span className="settings-tray">
       <i className="material-icons">cached</i>
       <i className="material-icons">message</i>
       <i className="material-icons">menu</i>
-    </span>
+    </span> */}
   </div>
 );
 

@@ -128,8 +128,8 @@ class Sidepanel extends React.Component {
           {this.state.display === "chatList"
             ? "chat list"
             : this.state.display === "friendList"
-              ? "friend list"
-              : "user list"
+              ? "friend list (click on friend to start new chat)"
+              : "user list (click on user to add him to friends)"
           }
 
           {this.state.display === "chatList"

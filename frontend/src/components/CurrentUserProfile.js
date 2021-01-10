@@ -30,8 +30,8 @@ const Profile = (props) => {
         >
           <i className="material-icons">exit_to_app</i>
         </button>
-        <i className="material-icons">message</i>
-        <i className="material-icons">menu</i>
+        {/* <i className="material-icons">message</i>
+        <i className="material-icons">menu</i> */}
       </span>
     </div>
   );

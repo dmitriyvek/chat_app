@@ -20,17 +20,31 @@ class AuthPage extends React.Component {
           event.target.username.value,
           event.target.password.value
         );
+        if (this.props.error) {
+          window.alert("Login is fail");
+        }
+      } else {
+        window.alert("Please specifiy your credentials");
       }
     } else {
       if (
         event.target.username.value &&
         event.target.password.value &&
-        event.target.password.value === event.target.password2.value
+        event.target.password2.value
       ) {
-        this.props.signup(
-          event.target.username.value,
-          event.target.password.value,
-        );
+        if (event.target.password.value === event.target.password2.value) {
+          this.props.signup(
+            event.target.username.value,
+            event.target.password.value,
+          );
+          if (this.props.error) {
+            window.alert("Registration is fail");
+          }
+        } else {
+          window.alert("Passwords did not matched"); 
+        }
+      } else {
+        window.alert("All fields must be specified"); 
       }
     }
   };
@@ -45,33 +59,38 @@ class AuthPage extends React.Component {
             <form method="POST" onSubmit={this.authenticate}>
               {this.state.loginForm ? (
                 <div>
-                  <input name="username" type="text" placeholder="username" />
-                  <input
-                    name="password"
-                    type="password"
-                    placeholder="password"
-                  />
+                  <div>
+                    <input name="username" type="text" placeholder="username" />
+                    <input
+                      name="password"
+                      type="password"
+                      placeholder="password"
+                    />
+                  </div>
+                  <button type="submit">Login</button>
                 </div>
               ) : (
                 <div>
-                  <input name="username" type="text" placeholder="username" />
-                  <input
-                    name="password"
-                    type="password"
-                    placeholder="password"
-                  />
-                  <input
-                    name="password2"
-                    type="password"
-                    placeholder="password confirm"
-                  />
+                  <div>
+                    <input name="username" type="text" placeholder="username" />
+                    <input
+                      name="password"
+                      type="password"
+                      placeholder="password"
+                    />
+                    <input
+                      name="password2"
+                      type="password"
+                      placeholder="password confirm"
+                    />
+                  </div>
+                  <button type="submit">Register</button>
                 </div>
               )}
-
-              <button type="submit">Authenticate</button>
             </form>
-
-            <button onClick={this.changeForm}>Switch</button>
+            <button onClick={this.changeForm}>
+              {this.state.loginForm ? "Switch to register form" : "Switch to login form"}
+            </button>
           </div>
         )}
       </div>
@@ -82,6 +101,7 @@ class AuthPage extends React.Component {
 const mapStateToProps = (state) => {
   return {
     loading: state.auth.loading,
+    error: state.auth.error
   };
 };
 
