@@ -3,6 +3,14 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require('webpack');
+const dotenv = require('dotenv');
+
+const env = dotenv.config({ path: path.resolve(process.cwd(), '../.env') }).parsed;
+const envKeys = {
+  "process.env.APP_HOST": JSON.stringify(env.APP_HOST),
+  "process.env.SOCKET_HOST": JSON.stringify(env.SOCKET_HOST),
+}
 
 const isDev = process.env.NODE_ENV === "development";
 const filename = (ext) => (isDev ? `[name].${ext}` : `[name].[hash].${ext}`);
@@ -106,6 +114,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin(envKeys),
     // new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       // filename: `${pathList.assets}/css/${filename(css)}`,

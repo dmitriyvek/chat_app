@@ -8,6 +8,7 @@ import * as authActions from "./store/actions/auth";
 import * as chatActions from "./store/actions/chat";
 import * as profileActions from "./store/actions/profile";
 
+
 class App extends React.Component {
   componentDidMount() {
     this.props.onTryAutoSignup();

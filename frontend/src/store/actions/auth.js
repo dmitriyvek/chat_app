@@ -80,7 +80,7 @@ const getNewAccessToken = () => {
   return (dispatch) => {
     const refreshToken = localStorage.getItem("refreshToken");
     axios
-      .post("http://127.0.0.1:8000/api-auth/login/refresh/", {
+      .post(`${process.env.APP_HOST}/api-auth/login/refresh/`, {
         refresh: refreshToken,
       })
       .then((response) => dispatch(newAccessToken(response.data)))
@@ -133,7 +133,7 @@ export const authLogin = (username, password) => {
   return (dispatch) => {
     dispatch(authStart());
     axios
-      .post("http://127.0.0.1:8000/api-auth/login/", {
+      .post(`${process.env.APP_HOST}/api-auth/login/`, {
         username: username,
         password: password,
       })
@@ -148,7 +148,7 @@ export const authSignup = (username, password) => {
   return (dispatch) => {
     dispatch(authStart());
     axios
-      .post("http://127.0.0.1:8000/api-auth/signup/", {
+      .post(`${process.env.APP_HOST}/api-auth/signup/`, {
         username: username,
         password: password,
       })

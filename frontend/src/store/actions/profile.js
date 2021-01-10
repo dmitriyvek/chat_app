@@ -18,7 +18,7 @@ export const getFriendList = (accessToken) => {
       Authorization: `Bearer ${accessToken}`,
     };
     axios
-      .get(`http://127.0.0.1:8000/friends/`)
+      .get(`${process.env.APP_HOST}friends/`)
       .then((response) => dispatch(getFriendListSuccess(response.data)));
   };
 };
@@ -39,7 +39,7 @@ export const getUserList = (accessToken) => {
       Authorization: `Bearer ${accessToken}`,
     };
     axios
-      .get(`http://127.0.0.1:8000/users/`)
+      .get(`${process.env.APP_HOST}/users/`)
       .then((response) => dispatch(getUserListSuccess(response.data)));
   };
 };

@@ -1,5 +1,11 @@
+import os
 from pathlib import Path
 from datetime import timedelta
+
+from dotenv import load_dotenv
+
+
+load_dotenv(verbose=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -9,14 +15,15 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_@b(j&dded65i1^e@c5f2&rr^8^yz7-ot%vs0^=t_3_kevx&7k'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True if os.getenv('DEBUG') == 'true' else False
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
+    os.getenv('HOST'),
 ]
 
 INTERNAL_IPS = [
@@ -80,7 +87,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [(os.getenv('HOST'), os.getenv('REDIS_PORT'))],
         },
     },
 }
@@ -91,11 +98,11 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'chat_app_db',
-        'USER': 'chat_app_user',
-        'PASSWORD': 'chat_app_psswd',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv('PSQL_DB'),
+        'USER': os.getenv('PSQL_USER'),
+        'PASSWORD': os.getenv('PSQL_PSWD'),
+        'HOST': os.getenv('HOST'),
+        'PORT': os.getenv('PSQL_PORT'),
     }
 }
 
@@ -169,10 +176,13 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'sub',
 }
 
-
+HOST = os.getenv('HOST')
+FRONTEND_PORT = os.getenv('FRONTEND_PORT')
 CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:3000',
-    'http://localhost:3000',
+    f'http://127.0.0.1:{FRONTEND_PORT}',
+    f'http://localhost:{FRONTEND_PORT}',
+    f'http://{HOST}:{FRONTEND_PORT}',
+    f'https://{HOST}:{FRONTEND_PORT}',
 )
 
 
