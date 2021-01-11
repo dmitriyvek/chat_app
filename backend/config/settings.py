@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'channels',
     'corsheaders',
+    'drf_yasg',
     'rest_framework',
 
     'chat.apps.ChatConfig',
@@ -181,7 +182,7 @@ FRONTEND_PORT = os.getenv('FRONTEND_PORT')
 CORS_ORIGIN_WHITELIST = (
     f'http://127.0.0.1:{FRONTEND_PORT}',
     f'http://localhost:{FRONTEND_PORT}',
-    f'http://{HOST}:{FRONTEND_PORT}',
+    # f'http://{HOST}:{FRONTEND_PORT}',
     f'https://{HOST}:{FRONTEND_PORT}',
 )
 
@@ -207,3 +208,16 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
+
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_API_URL': os.getenv('APP_HOST'),
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}
