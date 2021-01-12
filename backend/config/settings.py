@@ -152,8 +152,8 @@ STATIC_URL = '/static/'
 # ]
 
 
-ERROR_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/error.log')
-INFO_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/info.log')
+ERROR_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/app/error.log')
+INFO_LOG_FILE_LOCATION = Path(BASE_DIR, 'log/app/info.log')
 
 
 REST_FRAMEWORK = {
