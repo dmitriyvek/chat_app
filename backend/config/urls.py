@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('api-auth/', include('rest_framework.urls')),
     path('api-auth/', include('user.api.urls', namespace='user')),
-    path('', include('chat.api.urls', namespace='chat')),
+    path('api/', include('chat.api.urls', namespace='chat')),
 ]
 
 if settings.DEBUG:

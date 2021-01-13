@@ -66,7 +66,7 @@ export const getUserChatListAndInfo = (accessToken, userId) => {
       Authorization: `Bearer ${accessToken}`,
     };
     axios
-      .get(`${process.env.APP_HOST}/profile/${userId}`)
+      .get(`${process.env.APP_HOST}/api/profile/${userId}`)
       .then((res) => dispatch(getUserChatListAndInfoSuccess(res.data)));
   };
 };
@@ -81,7 +81,7 @@ export const getChatData = (accessToken, chatId, lastMessageIndex) => {
     };
     axios
       .get(
-        `${process.env.APP_HOST}/chats/${chatId}?last_message_index=${lastMessageIndex}`
+        `${process.env.APP_HOST}/api/chats/${chatId}?last_message_index=${lastMessageIndex}`
       )
       .then((res) => {
         if (res.data["companion_profile"]) {
