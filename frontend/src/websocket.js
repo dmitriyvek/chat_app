@@ -22,7 +22,7 @@ class WebSocketService {
     // if (this.socketRef) {
     //   this.disconnect();
     // }
-    const path = `${process.env.SOCKET_HOST}/ws/user?token=${token}`;
+    const path = `${process.env.SOCKET_DOMAIN_NAME}/ws/user?token=${token}`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
