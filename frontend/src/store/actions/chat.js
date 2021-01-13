@@ -66,7 +66,7 @@ export const getUserChatListAndInfo = (accessToken, userId) => {
       Authorization: `Bearer ${accessToken}`,
     };
     axios
-      .get(`${process.env.APP_DOMAIN_NAME}/profile/${userId}`)
+      .get(`${process.env.APP_DOMAIN_NAME}/profile/${userId}/`)
       .then((res) => dispatch(getUserChatListAndInfoSuccess(res.data)));
   };
 };
