@@ -115,7 +115,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin(envKeys),
-    // new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       // filename: `${pathList.assets}/css/${filename(css)}`,
       filename: filename("css"),

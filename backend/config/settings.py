@@ -23,7 +23,7 @@ DEBUG = True if os.getenv('DEBUG') == 'true' else False
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    os.getenv('HOST'),
+    os.getenv('DOMAIN_NAME'),
 ]
 
 INTERNAL_IPS = [

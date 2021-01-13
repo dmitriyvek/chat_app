@@ -8,7 +8,7 @@ load_dotenv()
 command = '/home/www/code/chat/backend/env/bin/gunicorn'
 pythonpath = '/home/www/code/chat/backend'
 bind = '{host}:{port}'.format(
-    host=os.getenv('HOST_IP'), port=os.getenv('GUNICORN_PORT'))
+    host=os.getenv('HOST'), port=os.getenv('GUNICORN_PORT'))
 workers = 3
 user = 'www'
 limit_request_fields = 32000
