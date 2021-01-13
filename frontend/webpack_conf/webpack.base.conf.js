@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 
 const env = dotenv.config({ path: path.resolve(process.cwd(), '../.env') }).parsed;
 const envKeys = {
-  "process.env.APP_HOST": JSON.stringify(env.APP_HOST),
+  "process.env.APP_DOMAIN_NAME": JSON.stringify(env.APP_DOMAIN_NAME),
   "process.env.SOCKET_HOST": JSON.stringify(env.SOCKET_HOST),
 }
 

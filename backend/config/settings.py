@@ -211,7 +211,7 @@ DEBUG_TOOLBAR_PANELS = [
 
 
 SWAGGER_SETTINGS = {
-    'DEFAULT_API_URL': os.getenv('APP_HOST'),
+    'DEFAULT_API_URL': os.getenv('APP_DOMAIN_NAME'),
     'SECURITY_DEFINITIONS': {
         'Bearer': {
             'type': 'apiKey',
