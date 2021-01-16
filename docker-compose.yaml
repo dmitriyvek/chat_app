@@ -1,0 +1,80 @@
+version: "3.3"
+
+volumes:
+  chat_data:
+
+networks:
+  postgres_network:
+    driver: bridge
+  redis_network:
+    driver: bridge
+  nginx_network:
+    driver: bridge
+
+services:
+  gunicorn:
+    build:
+      context: .
+      dockerfile: ./services/gunicorn/Dockerfile
+    image: chat_gunicorn
+    container_name: chat_gunicorn
+    networks:
+      - postgres_network
+      - nginx_network
+    depends_on:
+      - postgres
+    restart: always
+    expose:
+      - 8002
+    env_file:
+      - .env
+
+  daphne:
+    build:
+      context: .
+      dockerfile: ./services/daphne/Dockerfile
+    image: chat_daphne
+    container_name: chat_daphne
+    networks:
+      - postgres_network
+      - redis_network
+      - nginx_network
+    depends_on:
+      - postgres
+      - redis
+    restart: always
+    expose:
+      - 9002
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:12
+    networks:
+      - postgres_network
+    restart: always
+    volumes:
+      - chat_data:/var/lib/postgresql/data/
+    env_file:
+      - ./services/postgres/.env
+
+  redis:
+    image: redis:5.0
+    networks:
+      - redis_network
+    restart: always
+
+  nginx:
+    image: nginx:1.18
+    networks:
+      - nginx_network
+    restart: always
+    ports:
+      - 5000:80
+    depends_on:
+      - gunicorn
+      - daphne
+    volumes:
+      - ./services/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/dist:/var/chat/dist
+      - ./backend/static:/var/chat/static

@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 
@@ -88,7 +89,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [(os.getenv('HOST'), os.getenv('REDIS_PORT'))],
+            "hosts": [(os.getenv('REDIS_HOST'), os.getenv('REDIS_PORT'))],
         },
     },
 }
@@ -102,7 +103,7 @@ DATABASES = {
         'NAME': os.getenv('PSQL_DB'),
         'USER': os.getenv('PSQL_USER'),
         'PASSWORD': os.getenv('PSQL_PSWD'),
-        'HOST': os.getenv('HOST'),
+        'HOST': os.getenv('PSQL_HOST'),
         'PORT': os.getenv('PSQL_PORT'),
     }
 }
@@ -172,7 +173,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5) if DEBUG is False else timedelta(days=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3) if DEBUG is False else timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_CLAIM': 'sub',
 }
@@ -185,7 +186,9 @@ CORS_ORIGIN_WHITELIST = (
     # f'http://{HOST}:{FRONTEND_PORT}',
     f'https://{HOST}:{FRONTEND_PORT}',
 )
-
+CORS_ALLOW_HEADERS = default_headers + (
+    'Access-Control-Allow-Origin',
+)
 
 CSRF_COOKIE_NAME = "csrftoken"  # default
 
