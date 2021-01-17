@@ -3,31 +3,22 @@
 There is a [link on application](https://chat.dmitriyvek.com/)
 There is a [link on swagger](https://chat.dmitriyvek.com/swagger/)
 
-## Project installation and setup from source
+# Table of contents
 
-Getting project`s code
+1. [Geting the code](#get-code)
+2. [Setuping the project](#setup)
+   1. [Setup with docker](#docker-setup)
+   2. [Setup from source](#source-setup)
+
+## Getting the code ready to setup <a name="get-code"></a>
+
+Get the code
 
 ```
 git clone https://github.com/dmitriyvek/chat_app.git chat-app
 ```
 
-Install all python requirements
-
-```
-cd chat-app/backend
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
-```
-
-Install all javascript requirements
-
-```
-cd ../frontend
-npm install
-```
-
-Create a .env file in project`s root with given parameters. You also need a postgres db created with given paramenters
+Create a .env file in project`s root with given parameters
 
 ```
 DEBUG="(false | true)"
@@ -46,6 +37,67 @@ PSQL_PSWD=postgresql_password_for_given_db
 FRONTEND_PORT=port_of_frontend_server
 APP_DOMAIN_NAME="http(s)://domain_name"
 SOCKET_DOMAIN_NAME="ws(s)://domain_name"
+```
+
+## Setup the project <a name="setup"></a>
+
+### Setup with docker <a name="docker-setup"></a>
+
+You should [get the code and make .env file for it](#get-code)
+
+Make .env file for postgres setup
+
+```
+vim chat-app/services/postgres/.env
+    POSTGRES_DB=postgresql_db_name
+    POSTGRES_USER=postgresql_username_for_given_db
+    POSTGRES_PASSWORD=postgresql_password_for_given_db
+```
+
+Build javascript file
+
+```
+cd chat-app/frontend
+npm install
+npm run build
+```
+
+Start with docker-compose
+
+```
+docker-compose up
+```
+
+You may want to populate your db with some test data
+
+```
+docker-compose exec gunicorn env/bin/python3 manage.py init_db_data
+```
+
+### Setup from source <a name="source-setup"></a>
+
+You should [get the code and make .env file for it](#get-code)
+
+Install all python requirements
+
+```
+cd chat-app/backend
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+```
+
+Install all javascript requirements
+
+```
+cd ../frontend
+npm install
+```
+
+You may want to populate your db with some test data
+
+```
+./backend/manage.py init_db_data
 ```
 
 Change gunicorn configuration
