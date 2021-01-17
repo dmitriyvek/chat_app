@@ -25,7 +25,7 @@ services:
       - postgres
     restart: always
     expose:
-      - 8002
+      - "${GUNICORN_PORT}"
     env_file:
       - .env
 
@@ -44,7 +44,7 @@ services:
       - redis
     restart: always
     expose:
-      - 9002
+      - "${DAPHNE_PORT}"
     env_file:
       - .env
 
