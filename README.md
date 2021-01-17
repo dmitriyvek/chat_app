@@ -1,14 +1,14 @@
 # My example chat application
 
-There is a [link on application](https://chat.dmitriyvek.com/)
-There is a [link on swagger](https://chat.dmitriyvek.com/swagger/)
+- There is a [link on application](https://chat.dmitriyvek.com/)
+- There is a [link on swagger](https://chat.dmitriyvek.com/swagger/)
 
 # Table of contents
 
 1. [Geting the code](#get-code)
 2. [Setuping the project](#setup)
-   1. [Setup with docker](#docker-setup)
-   2. [Setup from source](#source-setup)
+   - [Setup with docker](#docker-setup)
+   - [Setup from source](#source-setup)
 
 ## Getting the code ready to setup <a name="get-code"></a>
 
