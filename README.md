@@ -132,5 +132,5 @@ Setup frontend
 ```
 cd ../frontend
 npm run build # for building a javascript file
-npm start $ for starting development server
+npm start # for starting development server
 ```
