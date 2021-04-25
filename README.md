@@ -1,7 +1,7 @@
 # My example chat application
 
-- There is a [link on application](https://chat.dmitriyvek.com/)
-- There is a [link on swagger](https://chat.dmitriyvek.com/swagger/)
+- There is a [link on application](https://www.chat.dmitriyvek.com/)
+- There is a [link on swagger](https://www.chat.dmitriyvek.com/swagger/)
 
 # Table of contents
 
