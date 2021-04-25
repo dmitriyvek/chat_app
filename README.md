@@ -1,7 +1,7 @@
 # My example chat application
 
-- There is a [link on application](https://chat.dmitriyvek.com/)
-- There is a [link on swagger](https://chat.dmitriyvek.com/swagger/)
+- There is a [link on application](https://www.chat.dmitriyvek.com/)
+- There is a [link on swagger](https://www.chat.dmitriyvek.com/swagger/)
 
 # Table of contents
 
@@ -132,5 +132,5 @@ Setup frontend
 ```
 cd ../frontend
 npm run build # for building a javascript file
-npm start $ for starting development server
+npm start # for starting development server
 ```

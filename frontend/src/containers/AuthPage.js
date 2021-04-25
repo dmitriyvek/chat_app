@@ -39,7 +39,7 @@ class AuthPage extends React.Component {
           );
           if (this.props.error) {
             window.alert("Registration is fail");
-          } else {this.setState((state) => return {loginForm: true})}
+          } else {this.setState((state) => {loginForm: true})}
         } else {
           window.alert("Passwords did not matched"); 
         }
