@@ -20,9 +20,9 @@ class AuthPage extends React.Component {
           event.target.username.value,
           event.target.password.value
         );
-        if (this.props.error) {
-          window.alert("Login is fail");
-        }
+        // if (this.props.error) {
+        //   window.alert("Login is fail");
+        // }
       } else {
         window.alert("Please specifiy your credentials");
       }
@@ -39,7 +39,7 @@ class AuthPage extends React.Component {
           );
           if (this.props.error) {
             window.alert("Registration is fail");
-          }
+          } else {this.setState((state) => return {loginForm: true})}
         } else {
           window.alert("Passwords did not matched"); 
         }
